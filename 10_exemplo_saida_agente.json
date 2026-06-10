@@ -1,0 +1,33 @@
+{
+  "obra": "Obra Piloto Núcleo",
+  "tarefa": "Realizar vistoria inicial da obra",
+  "departamento_responsavel": "Engenharia",
+  "decisao": "request_correction",
+  "nivel_risco": "medio",
+  "analise": "A vistoria foi registrada com fotos e checklist, mas a pendência hidráulica precisa ser detalhada antes de liberar planejamento e compras.",
+  "evidencias_validadas": [
+    "foto_vistoria_01.jpg",
+    "checklist_vistoria.pdf"
+  ],
+  "evidencias_faltantes": [
+    "medida/localização exata da interferência hidráulica",
+    "foto específica do ponto hidráulico"
+  ],
+  "acoes_recomendadas": [
+    "Engenharia deve complementar a evidência da interferência hidráulica.",
+    "Projetos deve avaliar se há conflito com o projeto hidráulico.",
+    "Planejamento deve aguardar validação antes de fechar cronograma desta etapa."
+  ],
+  "proximas_tarefas": [
+    {
+      "nome": "Avaliar interferência hidráulica identificada na vistoria",
+      "departamento": "Projetos",
+      "responsavel_sugerido": "Projetos",
+      "prazo_sugerido": "24h",
+      "descricao": "Conferir se a interferência hidráulica afeta projeto, compras ou execução."
+    }
+  ],
+  "mensagem_asana": "Análise do agente: vistoria recebida, porém aprovada com pendência. Complementar foto e medida do ponto hidráulico antes de liberar próxima etapa.",
+  "mensagem_cliente": "",
+  "precisa_revisao_humana": true
+}
