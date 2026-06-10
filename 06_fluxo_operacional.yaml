@@ -1,0 +1,76 @@
+fluxos:
+  entrada_obra:
+    origem: Atendimento
+    destino:
+      - Gestao
+      - Planejamento
+      - Projetos
+    agente: Orquestrador
+    saida: Plano inicial da obra
+
+  planejamento:
+    origem: Planejamento
+    destino:
+      - Engenharia
+      - Compras
+      - Financeiro
+      - Atendimento
+    agente: Agente de Planejamento
+    saida: Cronograma, EAP, riscos e marcos
+
+  projetos:
+    origem: Projetos
+    destino:
+      - Engenharia
+      - Compras
+      - Atendimento
+    agente: Agente de Projetos
+    saida: Pacote técnico validado ou lista de pendências
+
+  engenharia_campo:
+    origem: Engenharia
+    destino:
+      - Projetos
+      - Compras
+      - Financeiro
+      - Atendimento
+      - Gestao
+    agente: Agente de Engenharia
+    saida: Diagnóstico, diário de obra e pendências
+
+  compras:
+    origem: Compras
+    destino:
+      - Financeiro
+      - Engenharia
+      - Planejamento
+    agente: Agente de Compras
+    saida: Cotações, pedidos e previsão de entrega
+
+  financeiro:
+    origem: Financeiro
+    destino:
+      - Gestao
+      - Atendimento
+      - Engenharia
+    agente: Agente Financeiro
+    saida: Controle financeiro, pagamentos e medições
+
+  atendimento:
+    origem: Atendimento
+    destino:
+      - Cliente
+      - Gestao
+      - Engenharia
+      - Planejamento
+    agente: Agente de Atendimento
+    saida: Comunicação, aprovações e histórico
+
+  qualidade:
+    origem: Qualidade
+    destino:
+      - Gestao
+      - Engenharia
+      - Atendimento
+    agente: Agente Auditor de Qualidade
+    saida: Validação de etapa, pré-entrega e lições aprendidas
