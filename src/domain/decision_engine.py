@@ -29,9 +29,11 @@ def decide(task: TaskPayload) -> AgentDecision:
 
     if _normalize(task.status_agente) in BLOCKED_STATUS or task.dependencies:
         decision = "blocked"
+        requires_human_review = True
         actions.append("Gestão deve remover bloqueios ou dependências antes de avançar a etapa.")
     elif task.precisa_aprovacao_cliente:
         decision = "ask_client"
+        requires_human_review = True
         actions.append("Atendimento deve preparar a solicitação de aprovação do cliente para revisão humana.")
         next_tasks.append(
             NextTask(
@@ -44,15 +46,18 @@ def decide(task: TaskPayload) -> AgentDecision:
         )
     elif task.precisa_aprovacao_gestao or _is_high(task.impacto_financeiro):
         decision = "escalate_management"
+        requires_human_review = True
         actions.append("Gestão deve revisar antes da aprovação final devido a impacto financeiro ou necessidade de decisão interna.")
     elif missing:
         decision = "request_correction"
         actions.append("Responsável deve complementar evidências obrigatórias antes da liberação da etapa.")
     elif _is_high(task.impacto_prazo):
         decision = "escalate_management"
+        requires_human_review = True
         actions.append("Planejamento e gestão devem avaliar impacto no cronograma macro.")
     elif _is_high(task.impacto_cliente):
         decision = "ask_client"
+        requires_human_review = True
         actions.append("Atendimento deve preparar comunicação preventiva para revisão humana.")
     elif task.proximo_departamento:
         decision = "create_next_tasks"
