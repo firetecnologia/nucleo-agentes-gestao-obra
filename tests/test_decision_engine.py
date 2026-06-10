@@ -121,6 +121,29 @@ class DecisionEngineTests(unittest.TestCase):
         self.assertFalse(result.requires_human_review)
         self.assertEqual(result.next_tasks[0].department, "Financeiro")
 
+    def test_blocked_task_requires_human_review(self) -> None:
+        task = TaskPayload.from_dict(
+            {
+                "task_id": "6",
+                "task_name": "Resolver impedimento de campo",
+                "obra": "Obra Teste",
+                "departamento_responsavel": "Engenharia",
+                "etapa_obra": "Campo",
+                "status_agente": "Bloqueado",
+                "impacto_prazo": "Baixo",
+                "impacto_financeiro": "Baixo",
+                "impacto_cliente": "Baixo",
+                "attachments": [],
+                "comments": [],
+            }
+        )
+
+        result = decide(task)
+
+        self.assertEqual(result.decision, "blocked")
+        self.assertTrue(result.requires_human_review)
+        self.assertIn("revisão humana", result.asana_comment.lower())
+
 
 if __name__ == "__main__":
     unittest.main()
