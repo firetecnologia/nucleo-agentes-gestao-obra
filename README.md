@@ -14,6 +14,7 @@ O sistema nao executa chamadas reais ao Asana nesta fase. O `dry_run` e o compor
 - Roteia a analise para um agente especialista quando o departamento e reconhecido.
 - Gera relatorios diarios internos, semanais de gestao e rascunhos seguros para cliente.
 - Gera dashboard JSON por obra com metricas, historico de decisoes, riscos e saude da obra.
+- Guarda e consulta historico local em JSON para desenvolvimento, sem banco externo.
 - Gera comentario interno para Asana em portugues do Brasil.
 - Sugere proximas tarefas apenas como dry-run.
 - Exige revisao humana para impacto financeiro sensivel, gestao, bloqueios e comunicacao com cliente.
@@ -113,13 +114,22 @@ O dashboard nao conecta Asana real, email, WhatsApp ou qualquer canal externo. A
 }
 ```
 
+## Guardar e consultar historico local em dry-run
+
+```bash
+python -m src.workflows.store_record --input samples/storage_record_analysis.json --dry-run
+python -m src.workflows.query_records --obra "Obra Piloto Nucleo" --record-type analysis --dry-run
+```
+
+A camada de storage usa apenas arquivos JSON locais em `local_data/`. Essa pasta e ignorada pelo Git e serve para desenvolvimento, testes e demonstracoes internas. Nenhum banco externo, Asana real ou canal de envio e acionado.
+
 ## Rodar testes
 
 ```bash
 python -m unittest discover
 ```
 
-Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, stubs do Asana, automacao de eventos, agentes especialistas, relatorios, dashboard, metricas e historico de decisoes.
+Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, stubs do Asana, automacao de eventos, agentes especialistas, relatorios, dashboard, metricas, historico de decisoes e storage local.
 
 ## Estrutura
 
@@ -129,7 +139,8 @@ Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, 
 - `src/events/`: modelos, roteador, processador e log estruturado de eventos.
 - `src/reports/`: modelos e builders de relatorios em dry-run.
 - `src/dashboard/`: modelos, metricas, historico de decisoes e builder de dashboard por obra.
-- `src/workflows/`: CLIs de analise de tarefa, processamento de evento, geracao de relatorio e dashboard.
+- `src/storage/`: armazenamento local em JSON para historico dry-run.
+- `src/workflows/`: CLIs de analise de tarefa, processamento de evento, geracao de relatorio, dashboard e storage.
 - `tests/`: testes unitarios.
 - `samples/`: eventos simulados do Asana para dry-run.
 - `sample_task_payload.json`: payload de exemplo.
@@ -143,6 +154,7 @@ Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, 
 - Nenhum comentario ou tarefa e criado no Asana nesta fase.
 - Nenhum relatorio e enviado por email, WhatsApp, Asana real ou qualquer canal externo.
 - Nenhum dashboard executa operacao externa; ele apenas imprime JSON local.
+- O historico local usa `local_data/`, sem banco externo e sem credenciais.
 - Impacto financeiro alto nunca e aprovado sem revisao humana.
 - Impacto financeiro medio, alto ou critico em Financeiro escala para gestao.
 - Arquivos de planejamento nao devem ser apagados.
@@ -315,6 +327,46 @@ Regras de seguranca da Fase 6:
 - `external_operations` permanece vazio;
 - nenhum token real e usado;
 - historico e metricas sao apenas dados locais serializaveis em JSON.
+
+## Fase 7 - Storage local e consultas por obra
+
+A Fase 7 adiciona uma camada local para guardar saidas JSON do sistema durante desenvolvimento. O objetivo e formar historico consultavel por obra sem usar banco externo.
+
+Arquivos principais:
+
+- `src/storage/storage_models.py`: modelo `StorageRecord` e consulta `StorageQuery`.
+- `src/storage/json_store.py`: persistencia local em arquivos JSON.
+- `src/storage/repositories.py`: repositorio para salvar e consultar registros por obra e tipo.
+- `src/workflows/store_record.py`: CLI para salvar registro local.
+- `src/workflows/query_records.py`: CLI para consultar historico local.
+
+Estrutura local criada automaticamente:
+
+```txt
+local_data/
+  analyses/
+  events/
+  reports/
+  dashboards/
+  decision_history/
+```
+
+Tipos suportados:
+
+- `analysis`
+- `event`
+- `report`
+- `dashboard`
+- `decision_history`
+
+Regras de seguranca da Fase 7:
+
+- `local_data/` fica fora do Git;
+- tudo permanece em `dry_run`;
+- nenhuma chamada real ao Asana e executada;
+- nenhum banco externo e usado;
+- nenhum token real e necessario;
+- `external_operations` permanece vazio.
 
 ## CI
 

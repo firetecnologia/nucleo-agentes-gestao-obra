@@ -1,0 +1,17 @@
+{
+  "id": "analysis-task-201",
+  "obra": "Obra Piloto Nucleo",
+  "record_type": "analysis",
+  "created_at": "2026-06-10T09:00:00Z",
+  "source": "local_dry_run",
+  "payload": {
+    "task_id": "task-201",
+    "task_name": "Liberar frente de campo",
+    "department": "Engenharia",
+    "decision": "approved",
+    "risk_level": "low",
+    "requires_human_review": false,
+    "dry_run": true,
+    "external_operations": []
+  }
+}
