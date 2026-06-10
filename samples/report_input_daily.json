@@ -1,0 +1,67 @@
+{
+  "obra": "Obra Piloto Nucleo",
+  "data_referencia": "2026-06-17",
+  "periodo": {
+    "inicio": "2026-06-17",
+    "fim": "2026-06-17"
+  },
+  "items": [
+    {
+      "task_id": "task-001",
+      "task_name": "Validar vistoria inicial",
+      "department": "Engenharia",
+      "decision": "request_correction",
+      "risk_level": "medium",
+      "requires_human_review": true,
+      "specialist_agent": "EngineeringAgent",
+      "recommended_actions": [
+        "Responsavel deve anexar foto e diario de obra antes da liberacao."
+      ],
+      "missing_evidence": ["Foto", "Diario de obra"],
+      "planned_operations": [
+        {"operation": "post_comment", "dry_run": true}
+      ],
+      "impacto_prazo": "Medio",
+      "impacto_financeiro": "Baixo",
+      "impacto_cliente": "Baixo"
+    },
+    {
+      "task_id": "task-002",
+      "task_name": "Conferir checklist de qualidade",
+      "department": "Qualidade",
+      "decision": "approved",
+      "risk_level": "low",
+      "requires_human_review": false,
+      "specialist_agent": "QualityAgent",
+      "recommended_actions": [
+        "Seguir para proxima etapa planejada."
+      ],
+      "missing_evidence": [],
+      "planned_operations": [
+        {"operation": "post_comment", "dry_run": true}
+      ],
+      "impacto_prazo": "Baixo",
+      "impacto_financeiro": "Baixo",
+      "impacto_cliente": "Baixo"
+    },
+    {
+      "task_id": "task-003",
+      "task_name": "Revisar decisao de compra",
+      "department": "Compras",
+      "decision": "blocked",
+      "risk_level": "high",
+      "requires_human_review": true,
+      "specialist_agent": "PurchasingAgent",
+      "recommended_actions": [
+        "Gestao deve validar especificacao e aprovacao interna antes da compra."
+      ],
+      "missing_evidence": ["Cotacao"],
+      "planned_operations": [
+        {"operation": "post_comment", "dry_run": true}
+      ],
+      "impacto_prazo": "Alto",
+      "impacto_financeiro": "Medio",
+      "impacto_cliente": "Baixo"
+    }
+  ]
+}

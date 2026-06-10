@@ -12,6 +12,7 @@ O sistema nao executa chamadas reais ao Asana nesta fase. O `dry_run` e o compor
 - Classifica risco como `low`, `medium`, `high` ou `critical`.
 - Decide entre `approved`, `request_correction`, `escalate_management`, `ask_client`, `create_next_tasks`, `blocked` ou `monitor`.
 - Roteia a analise para um agente especialista quando o departamento e reconhecido.
+- Gera relatorios diarios internos, semanais de gestao e rascunhos seguros para cliente.
 - Gera comentario interno para Asana em portugues do Brasil.
 - Sugere proximas tarefas apenas como dry-run.
 - Exige revisao humana para impacto financeiro sensivel, gestao, bloqueios e comunicacao com cliente.
@@ -84,13 +85,23 @@ O workflow de eventos recebe um JSON simulado, roteia pelo tipo de evento, roda 
 }
 ```
 
+## Gerar relatorios em dry-run
+
+```bash
+python -m src.workflows.generate_report --input samples/report_input_daily.json --type internal_daily --dry-run
+python -m src.workflows.generate_report --input samples/report_input_weekly.json --type weekly_management --dry-run
+python -m src.workflows.generate_report --input samples/report_input_weekly.json --type client_draft --dry-run
+```
+
+A CLI de relatorios apenas imprime JSON local. Ela nao envia email, WhatsApp, comentario no Asana, mensagem ao cliente ou qualquer outra operacao externa.
+
 ## Rodar testes
 
 ```bash
 python -m unittest discover
 ```
 
-Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, stubs do Asana, automacao de eventos e agentes especialistas por departamento.
+Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, stubs do Asana, automacao de eventos, agentes especialistas e relatorios.
 
 ## Estrutura
 
@@ -98,7 +109,8 @@ Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, 
 - `src/agents/`: agente orquestrador e agentes especialistas por departamento.
 - `src/integrations/`: stub seguro para integracao com Asana.
 - `src/events/`: modelos, roteador, processador e log estruturado de eventos.
-- `src/workflows/`: CLIs de analise de tarefa e processamento de evento.
+- `src/reports/`: modelos e builders de relatorios em dry-run.
+- `src/workflows/`: CLIs de analise de tarefa, processamento de evento e geracao de relatorio.
 - `tests/`: testes unitarios.
 - `samples/`: eventos simulados do Asana para dry-run.
 - `sample_task_payload.json`: payload de exemplo.
@@ -110,6 +122,7 @@ Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, 
 - Nenhum token real deve ser versionado.
 - Nenhuma mensagem e enviada automaticamente ao cliente.
 - Nenhum comentario ou tarefa e criado no Asana nesta fase.
+- Nenhum relatorio e enviado por email, WhatsApp, Asana real ou qualquer canal externo.
 - Impacto financeiro alto nunca e aprovado sem revisao humana.
 - Impacto financeiro medio, alto ou critico em Financeiro escala para gestao.
 - Arquivos de planejamento nao devem ser apagados.
@@ -202,6 +215,41 @@ Regras de seguranca mantidas na Fase 4:
 - nenhuma mensagem e enviada automaticamente ao cliente;
 - nenhuma tarefa real e criada;
 - bloqueios, comunicacao com cliente e correcoes impedem aprovacao automatica.
+
+## Fase 5 - Relatorios operacionais, executivos e rascunhos para cliente
+
+A Fase 5 transforma os resultados de analises e eventos em relatorios uteis para gestao, equipe interna e cliente, mantendo tudo em dry-run.
+
+Arquivos principais:
+
+- `src/reports/report_models.py`: modelos serializaveis de entrada, itens, periodo, rascunho de cliente e saida.
+- `src/reports/report_builder.py`: builder central, classificacao de saude da obra e consolidadores.
+- `src/reports/internal_daily_report.py`: relatorio diario interno para orientar a equipe.
+- `src/reports/weekly_management_report.py`: relatorio semanal executivo para lideranca.
+- `src/reports/client_report_draft.py`: rascunho seguro para cliente, sempre com revisao humana.
+- `src/workflows/generate_report.py`: CLI para gerar relatorios em JSON.
+
+Tipos suportados:
+
+- `internal_daily`: tarefas analisadas, aprovadas, correcoes, bloqueios, riscos ativos, pendencias por departamento, proximas acoes e decisoes de gestao.
+- `weekly_management`: resumo executivo, saude da obra, avancos, riscos, impactos de prazo, impactos financeiros, gargalos, decisoes pendentes e recomendacoes.
+- `client_draft`: comunicacao profissional em rascunho, sem envio automatico, sem expor conflito interno ou linguagem alarmista.
+
+Indicador de saude da obra:
+
+- `on_track`: maioria aprovada e sem riscos relevantes.
+- `attention`: correcoes, riscos medios, aprovacoes pendentes ou gargalo de departamento.
+- `at_risk`: multiplos riscos altos, impacto financeiro alto ou prazo critico.
+- `critical`: risco critico ou tarefa bloqueada relevante.
+
+Regras de seguranca da Fase 5:
+
+- tudo permanece em `dry_run`;
+- a CLI nao conecta canal externo;
+- o rascunho para cliente sempre retorna `requires_human_review=true`;
+- `external_operations` permanece vazio;
+- nenhum relatorio e enviado automaticamente;
+- nenhum token real e usado.
 
 ## CI
 

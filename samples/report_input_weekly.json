@@ -1,0 +1,85 @@
+{
+  "obra": "Obra Piloto Nucleo",
+  "periodo": {
+    "inicio": "2026-06-10",
+    "fim": "2026-06-17"
+  },
+  "items": [
+    {
+      "task_id": "task-101",
+      "task_name": "Liberar etapa de campo",
+      "department": "Engenharia",
+      "decision": "approved",
+      "risk_level": "low",
+      "requires_human_review": false,
+      "specialist_agent": "EngineeringAgent",
+      "recommended_actions": [
+        "Prosseguir para etapa planejada."
+      ],
+      "missing_evidence": [],
+      "planned_operations": [
+        {"operation": "post_comment", "dry_run": true}
+      ],
+      "impacto_prazo": "Baixo",
+      "impacto_financeiro": "Baixo",
+      "impacto_cliente": "Baixo"
+    },
+    {
+      "task_id": "task-102",
+      "task_name": "Compatibilizar detalhe executivo",
+      "department": "Projetos",
+      "decision": "request_correction",
+      "risk_level": "high",
+      "requires_human_review": true,
+      "specialist_agent": "ProjectsAgent",
+      "recommended_actions": [
+        "Projetos deve revisar versao e detalhe executivo antes de liberar campo."
+      ],
+      "missing_evidence": ["Projeto"],
+      "planned_operations": [
+        {"operation": "post_comment", "dry_run": true}
+      ],
+      "impacto_prazo": "Alto",
+      "impacto_financeiro": "Baixo",
+      "impacto_cliente": "Medio"
+    },
+    {
+      "task_id": "task-103",
+      "task_name": "Revisar impacto financeiro de medicao",
+      "department": "Financeiro",
+      "decision": "escalate_management",
+      "risk_level": "high",
+      "requires_human_review": true,
+      "specialist_agent": "FinanceAgent",
+      "recommended_actions": [
+        "Gestao/Financeiro devem revisar previsto x realizado antes de aprovar."
+      ],
+      "missing_evidence": ["Medicao"],
+      "planned_operations": [
+        {"operation": "create_task", "dry_run": true}
+      ],
+      "impacto_prazo": "Medio",
+      "impacto_financeiro": "Alto",
+      "impacto_cliente": "Baixo"
+    },
+    {
+      "task_id": "task-104",
+      "task_name": "Preparar alinhamento de cliente",
+      "department": "Atendimento",
+      "decision": "ask_client",
+      "risk_level": "medium",
+      "requires_human_review": true,
+      "specialist_agent": "ClientServiceAgent",
+      "recommended_actions": [
+        "Preparar rascunho interno para revisao humana. Nenhuma mensagem deve ser enviada automaticamente."
+      ],
+      "missing_evidence": [],
+      "planned_operations": [
+        {"operation": "create_task", "dry_run": true}
+      ],
+      "impacto_prazo": "Baixo",
+      "impacto_financeiro": "Baixo",
+      "impacto_cliente": "Alto"
+    }
+  ]
+}
