@@ -1,0 +1,40 @@
+{
+  "event_id": "evt-task-ready-001",
+  "event_type": "task_ready_for_agent_review",
+  "task_id": "123456789",
+  "source": "asana_simulado",
+  "dry_run": true,
+  "occurred_at": "2026-06-10T18:55:00Z",
+  "task_payload": {
+    "task_id": "123456789",
+    "task_name": "Realizar vistoria inicial da obra",
+    "obra": "Obra Piloto Núcleo",
+    "departamento_responsavel": "Engenharia",
+    "etapa_obra": "Campo",
+    "assignee": "Equipe Engenharia",
+    "due_on": "2026-06-20",
+    "status_agente": "Pronto para análise",
+    "prioridade": "Alta",
+    "impacto_prazo": "Médio",
+    "impacto_financeiro": "Baixo",
+    "impacto_cliente": "Médio",
+    "precisa_aprovacao_gestao": false,
+    "precisa_aprovacao_cliente": false,
+    "evidencia_obrigatoria": ["Foto", "Checklist", "Diario de obra"],
+    "attachments": [
+      {"name": "foto_vistoria_01.jpg", "type": "image/jpeg"},
+      {"name": "checklist_vistoria.pdf", "type": "application/pdf"}
+    ],
+    "comments": [
+      {"author": "Engenharia", "text": "Vistoria realizada. Identificada pendência técnica para detalhamento."}
+    ],
+    "description": "Vistoria inicial para validação das condições reais do local.",
+    "dependencies": [],
+    "custom_notes": {
+      "risco_identificado": "Pendência técnica a detalhar."
+    }
+  },
+  "metadata": {
+    "trigger": "status_agente alterado para Pronto para análise"
+  }
+}

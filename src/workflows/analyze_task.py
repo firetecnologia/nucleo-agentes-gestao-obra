@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from src.agents.orchestrator import OrchestratorAgent
+from src.config import AppConfig
 from src.domain.models import TaskPayload
 from src.integrations.asana_client import AsanaClient
 
@@ -28,7 +29,8 @@ def main() -> None:
     task = load_payload(args.input)
     agent = OrchestratorAgent()
     decision = agent.analyze(task)
-    asana = AsanaClient(dry_run=True)
+    config = AppConfig.from_env()
+    asana = AsanaClient.from_config(config, dry_run=True)
 
     output = decision.to_dict()
     output["dry_run"] = True

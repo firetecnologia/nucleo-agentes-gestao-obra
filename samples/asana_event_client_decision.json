@@ -1,0 +1,35 @@
+{
+  "event_id": "evt-client-decision-001",
+  "event_type": "client_decision_required",
+  "task_id": "323456789",
+  "source": "asana_simulado",
+  "dry_run": true,
+  "occurred_at": "2026-06-10T19:05:00Z",
+  "task_payload": {
+    "task_id": "323456789",
+    "task_name": "Validar alteração de layout",
+    "obra": "Obra Piloto Núcleo",
+    "departamento_responsavel": "Atendimento",
+    "etapa_obra": "Cliente",
+    "assignee": "Equipe Atendimento",
+    "due_on": "2026-06-12",
+    "status_agente": "Pronto para análise",
+    "prioridade": "Média",
+    "impacto_prazo": "Médio",
+    "impacto_financeiro": "Baixo",
+    "impacto_cliente": "Alto",
+    "precisa_aprovacao_gestao": false,
+    "precisa_aprovacao_cliente": true,
+    "evidencia_obrigatoria": ["Aprovacao cliente"],
+    "attachments": [],
+    "comments": [
+      {"author": "Atendimento", "text": "Cliente precisa decidir entre duas opções de layout."}
+    ],
+    "description": "Evento para gerar rascunho/tarefa interna de Atendimento, sem envio ao cliente.",
+    "dependencies": [],
+    "custom_notes": {}
+  },
+  "metadata": {
+    "trigger": "precisa_aprovacao_cliente true"
+  }
+}

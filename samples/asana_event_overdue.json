@@ -1,0 +1,37 @@
+{
+  "event_id": "evt-overdue-001",
+  "event_type": "task_overdue",
+  "task_id": "223456789",
+  "source": "asana_simulado",
+  "dry_run": true,
+  "occurred_at": "2026-06-10T19:00:00Z",
+  "task_payload": {
+    "task_id": "223456789",
+    "task_name": "Concluir compatibilização de projeto",
+    "obra": "Obra Piloto Núcleo",
+    "departamento_responsavel": "Projetos",
+    "etapa_obra": "Projetos",
+    "assignee": "Equipe Projetos",
+    "due_on": "2026-06-01",
+    "status_agente": "Em andamento",
+    "prioridade": "Alta",
+    "impacto_prazo": "Alto",
+    "impacto_financeiro": "Baixo",
+    "impacto_cliente": "Médio",
+    "precisa_aprovacao_gestao": true,
+    "precisa_aprovacao_cliente": false,
+    "evidencia_obrigatoria": ["Projeto"],
+    "attachments": [],
+    "comments": [
+      {"author": "Projetos", "text": "Compatibilização ainda pendente."}
+    ],
+    "description": "Tarefa vencida usada para simular alerta interno.",
+    "dependencies": [],
+    "custom_notes": {
+      "concluida": false
+    }
+  },
+  "metadata": {
+    "trigger": "tarefa vencida e não concluída"
+  }
+}
