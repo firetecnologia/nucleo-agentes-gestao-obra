@@ -1,0 +1,114 @@
+campos_personalizados:
+  obra:
+    tipo: texto
+    descricao: Nome da obra vinculada à tarefa.
+
+  departamento_responsavel:
+    tipo: selecao_unica
+    opcoes:
+      - Gestao
+      - Planejamento
+      - Engenharia
+      - Projetos
+      - Compras
+      - Financeiro
+      - Atendimento
+      - Qualidade
+
+  etapa_obra:
+    tipo: selecao_unica
+    opcoes:
+      - Entrada
+      - Planejamento
+      - Projetos
+      - Compras
+      - Campo
+      - Financeiro
+      - Atendimento
+      - Qualidade
+      - Encerramento
+
+  status_agente:
+    tipo: selecao_unica
+    opcoes:
+      - Aguardando equipe
+      - Pronto para analise
+      - Em analise
+      - Correcao solicitada
+      - Aprovado
+      - Bloqueado
+      - Escalado para gestao
+
+  proximo_departamento:
+    tipo: selecao_unica
+    opcoes:
+      - Gestao
+      - Planejamento
+      - Engenharia
+      - Projetos
+      - Compras
+      - Financeiro
+      - Atendimento
+      - Qualidade
+      - Nenhum
+
+  prioridade:
+    tipo: selecao_unica
+    opcoes:
+      - Baixa
+      - Media
+      - Alta
+      - Critica
+
+  impacto_prazo:
+    tipo: selecao_unica
+    opcoes:
+      - Nenhum
+      - Baixo
+      - Medio
+      - Alto
+      - Critico
+
+  impacto_financeiro:
+    tipo: selecao_unica
+    opcoes:
+      - Nenhum
+      - Baixo
+      - Medio
+      - Alto
+      - Critico
+
+  impacto_cliente:
+    tipo: selecao_unica
+    opcoes:
+      - Nenhum
+      - Baixo
+      - Medio
+      - Alto
+      - Critico
+
+  precisa_aprovacao_gestao:
+    tipo: booleano
+
+  precisa_aprovacao_cliente:
+    tipo: booleano
+
+  evidencia_obrigatoria:
+    tipo: multi_selecao
+    opcoes:
+      - Foto
+      - Checklist
+      - Projeto
+      - Orcamento
+      - Nota fiscal
+      - Boleto
+      - Medicao
+      - Diario de obra
+      - Aprovacao cliente
+      - Aprovacao gestao
+
+  risco_identificado:
+    tipo: texto
+
+  decisao_tomada:
+    tipo: texto
