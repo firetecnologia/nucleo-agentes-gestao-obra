@@ -15,6 +15,7 @@ O sistema nao executa chamadas reais ao Asana nesta fase. O `dry_run` e o compor
 - Gera relatorios diarios internos, semanais de gestao e rascunhos seguros para cliente.
 - Gera dashboard JSON por obra com metricas, historico de decisoes, riscos e saude da obra.
 - Guarda e consulta historico local em JSON para desenvolvimento, sem banco externo.
+- Expoe rotas internas API-like em dry-run para analise, eventos, relatorios e dashboard.
 - Gera comentario interno para Asana em portugues do Brasil.
 - Sugere proximas tarefas apenas como dry-run.
 - Exige revisao humana para impacto financeiro sensivel, gestao, bloqueios e comunicacao com cliente.
@@ -123,13 +124,35 @@ python -m src.workflows.query_records --obra "Obra Piloto Nucleo" --record-type 
 
 A camada de storage usa apenas arquivos JSON locais em `local_data/`. Essa pasta e ignorada pelo Git e serve para desenvolvimento, testes e demonstracoes internas. Nenhum banco externo, Asana real ou canal de envio e acionado.
 
+## API interna em dry-run
+
+Nesta fase, a API e uma camada local testavel em memoria, sem dependencia externa. Os endpoints internos disponiveis sao:
+
+- `GET /health`
+- `POST /analyze-task`
+- `POST /process-event`
+- `POST /generate-report`
+- `POST /generate-dashboard`
+
+Exemplo de uso em Python:
+
+```python
+from src.api import create_app
+
+app = create_app()
+response = app.get("/health")
+print(response.to_dict())
+```
+
+FastAPI e `uvicorn src.api.app:app --reload` ficam documentados como evolucao futura quando dependencias externas forem aprovadas. A fase atual mantem apenas biblioteca padrao para preservar testes locais e seguranca.
+
 ## Rodar testes
 
 ```bash
 python -m unittest discover
 ```
 
-Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, stubs do Asana, automacao de eventos, agentes especialistas, relatorios, dashboard, metricas, historico de decisoes e storage local.
+Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, stubs do Asana, automacao de eventos, agentes especialistas, relatorios, dashboard, metricas, historico de decisoes, storage local e rotas internas da API.
 
 ## Estrutura
 
@@ -140,6 +163,7 @@ Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, 
 - `src/reports/`: modelos e builders de relatorios em dry-run.
 - `src/dashboard/`: modelos, metricas, historico de decisoes e builder de dashboard por obra.
 - `src/storage/`: armazenamento local em JSON para historico dry-run.
+- `src/api/`: camada API-like local em dry-run.
 - `src/workflows/`: CLIs de analise de tarefa, processamento de evento, geracao de relatorio, dashboard e storage.
 - `tests/`: testes unitarios.
 - `samples/`: eventos simulados do Asana para dry-run.
@@ -155,6 +179,7 @@ Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, 
 - Nenhum relatorio e enviado por email, WhatsApp, Asana real ou qualquer canal externo.
 - Nenhum dashboard executa operacao externa; ele apenas imprime JSON local.
 - O historico local usa `local_data/`, sem banco externo e sem credenciais.
+- A API interna nao exige token e nao executa operacao externa.
 - Impacto financeiro alto nunca e aprovado sem revisao humana.
 - Impacto financeiro medio, alto ou critico em Financeiro escala para gestao.
 - Arquivos de planejamento nao devem ser apagados.
@@ -365,6 +390,39 @@ Regras de seguranca da Fase 7:
 - tudo permanece em `dry_run`;
 - nenhuma chamada real ao Asana e executada;
 - nenhum banco externo e usado;
+- nenhum token real e necessario;
+- `external_operations` permanece vazio.
+
+## Fase 8 - API interna local em dry-run
+
+A Fase 8 cria uma camada API-like para expor os recursos ja construidos sem adicionar dependencia externa. Isso permite testar os contratos de rota antes de acoplar FastAPI em uma fase posterior.
+
+Arquivos principais:
+
+- `src/api/app.py`: aplicacao local com roteamento em memoria.
+- `src/api/routes_analysis.py`: rota `POST /analyze-task`.
+- `src/api/routes_events.py`: rota `POST /process-event`.
+- `src/api/routes_reports.py`: rota `POST /generate-report`.
+- `src/api/routes_dashboard.py`: rota `POST /generate-dashboard`.
+- `src/api/schemas.py`: respostas e definicoes serializaveis.
+
+Rotas disponiveis:
+
+```txt
+GET  /health
+POST /analyze-task
+POST /process-event
+POST /generate-report
+POST /generate-dashboard
+```
+
+Regras de seguranca da Fase 8:
+
+- tudo permanece em `dry_run`;
+- nenhuma dependencia externa obrigatoria foi adicionada;
+- FastAPI/uvicorn ficam para a etapa em que dependencias forem aprovadas;
+- nenhuma chamada real ao Asana e executada;
+- nenhuma mensagem e enviada ao cliente;
 - nenhum token real e necessario;
 - `external_operations` permanece vazio.
 
