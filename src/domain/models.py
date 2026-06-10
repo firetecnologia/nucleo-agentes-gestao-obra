@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from typing import Any, Literal
 
 Decision = Literal[
@@ -51,6 +51,7 @@ class TaskPayload:
     impacto_prazo: str | None = None
     impacto_financeiro: str | None = None
     impacto_cliente: str | None = None
+    proximo_departamento: str | None = None
     precisa_aprovacao_gestao: bool = False
     precisa_aprovacao_cliente: bool = False
     evidencia_obrigatoria: list[str] = field(default_factory=list)
@@ -75,6 +76,7 @@ class TaskPayload:
             impacto_prazo=data.get("impacto_prazo"),
             impacto_financeiro=data.get("impacto_financeiro"),
             impacto_cliente=data.get("impacto_cliente"),
+            proximo_departamento=data.get("proximo_departamento"),
             precisa_aprovacao_gestao=bool(data.get("precisa_aprovacao_gestao", False)),
             precisa_aprovacao_cliente=bool(data.get("precisa_aprovacao_cliente", False)),
             evidencia_obrigatoria=list(data.get("evidencia_obrigatoria", [])),
@@ -107,6 +109,6 @@ class AgentDecision:
             "validated_evidence": self.validated_evidence,
             "missing_evidence": self.missing_evidence,
             "recommended_actions": self.recommended_actions,
-            "next_tasks": [task.__dict__ for task in self.next_tasks],
+            "next_tasks": [asdict(task) for task in self.next_tasks],
             "requires_human_review": self.requires_human_review,
         }

@@ -15,15 +15,17 @@ python -m src.workflows.analyze_task --input sample_task_payload.json --dry-run
 
 ## 3. Rodar testes
 
-Instale pytest no seu ambiente Python e execute:
+O MVP usa `unittest` e não exige dependências externas:
 
 ```bash
-python -m pytest
+python -m unittest discover
 ```
 
 ## Observações
 
 - A primeira versão não altera o Asana.
-- A integração com Asana está em modo placeholder.
-- O foco desta entrega é validar a lógica de análise, risco e decisão.
-- Tokens reais devem ser configurados apenas em etapa posterior.
+- O dry-run é o padrão do MVP.
+- A integração com Asana está preparada apenas como simulação.
+- Nunca versionar tokens reais.
+- Mensagens ao cliente exigem revisão humana.
+- Impacto financeiro alto exige revisão humana.

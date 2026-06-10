@@ -5,10 +5,17 @@ from .risk_classifier import classify_risk
 from .evidence_validator import validate_evidence
 
 
-def _is_high(value: str | None) -> bool:
+BLOCKED_STATUS = {"bloqueado", "blocked", "impedido", "parado"}
+
+
+def _normalize(value: str | None) -> str:
     if not value:
-        return False
-    return value.lower().strip() in {"alto", "alta", "critico", "crítico", "critica", "crítica"}
+        return ""
+    return value.lower().strip()
+
+
+def _is_high(value: str | None) -> bool:
+    return _normalize(value) in {"alto", "alta", "critico", "crítico", "critica", "crítica"}
 
 
 def decide(task: TaskPayload) -> AgentDecision:
@@ -20,16 +27,19 @@ def decide(task: TaskPayload) -> AgentDecision:
     decision = "approved"
     requires_human_review = risk_level in {"medium", "high", "critical"}
 
-    if task.precisa_aprovacao_cliente:
+    if _normalize(task.status_agente) in BLOCKED_STATUS or task.dependencies:
+        decision = "blocked"
+        actions.append("Gestão deve remover bloqueios ou dependências antes de avançar a etapa.")
+    elif task.precisa_aprovacao_cliente:
         decision = "ask_client"
-        actions.append("Atendimento deve solicitar ou confirmar aprovação do cliente antes de avançar.")
+        actions.append("Atendimento deve preparar a solicitação de aprovação do cliente para revisão humana.")
         next_tasks.append(
             NextTask(
-                name=f"Solicitar aprovação do cliente — {task.task_name}",
+                name=f"Solicitar aprovação do cliente - {task.task_name}",
                 department="Atendimento",
                 suggested_owner="Atendimento",
                 suggested_due="24h",
-                description="Gerar mensagem clara para o cliente e registrar decisão no Asana.",
+                description="Preparar mensagem clara para revisão humana antes de qualquer envio ao cliente.",
             )
         )
     elif task.precisa_aprovacao_gestao or _is_high(task.impacto_financeiro):
@@ -43,7 +53,23 @@ def decide(task: TaskPayload) -> AgentDecision:
         actions.append("Planejamento e gestão devem avaliar impacto no cronograma macro.")
     elif _is_high(task.impacto_cliente):
         decision = "ask_client"
-        actions.append("Atendimento deve preparar comunicação preventiva para o cliente.")
+        actions.append("Atendimento deve preparar comunicação preventiva para revisão humana.")
+    elif task.proximo_departamento:
+        decision = "create_next_tasks"
+        requires_human_review = False
+        actions.append("Criar próxima tarefa em modo dry-run para o departamento seguinte.")
+        next_tasks.append(
+            NextTask(
+                name=f"Próxima etapa - {task.task_name}",
+                department=task.proximo_departamento,
+                suggested_owner=task.proximo_departamento,
+                suggested_due=None,
+                description=(
+                    f"Dar sequência à etapa '{task.etapa_obra}' da obra {task.obra} "
+                    f"após validação inicial do agente."
+                ),
+            )
+        )
     else:
         decision = "approved"
         requires_human_review = False
@@ -93,11 +119,16 @@ def _build_asana_comment(
 ) -> str:
     missing_text = ", ".join(missing) if missing else "nenhuma evidência obrigatória pendente"
     action_text = " ".join(actions)
+    review_text = (
+        " Revisão humana obrigatória antes de qualquer comunicação externa."
+        if decision in {"ask_client", "escalate_management", "blocked"}
+        else ""
+    )
     return (
-        f"Análise do agente — Obra: {task.obra}. "
+        f"Análise do agente - Obra: {task.obra}. "
         f"Tarefa: {task.task_name}. "
         f"Decisão: {decision}. "
         f"Risco: {risk_level}. "
         f"Pendências de evidência: {missing_text}. "
-        f"Próxima ação: {action_text}"
+        f"Próxima ação: {action_text}{review_text}"
     )

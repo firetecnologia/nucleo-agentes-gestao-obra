@@ -6,6 +6,7 @@ from pathlib import Path
 
 from src.agents.orchestrator import OrchestratorAgent
 from src.domain.models import TaskPayload
+from src.integrations.asana_client import AsanaClient
 
 
 def load_payload(path: str) -> TaskPayload:
@@ -16,15 +17,31 @@ def load_payload(path: str) -> TaskPayload:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Analisa uma tarefa de obra com o Agente Orquestrador.")
     parser.add_argument("--input", required=True, help="Caminho do JSON da tarefa.")
-    parser.add_argument("--dry-run", action="store_true", help="Executa sem alterar sistemas externos.")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=True,
+        help="Executa sem alterar sistemas externos. Este é o padrão do MVP.",
+    )
     args = parser.parse_args()
 
     task = load_payload(args.input)
     agent = OrchestratorAgent()
     decision = agent.analyze(task)
+    asana = AsanaClient(dry_run=True)
 
     output = decision.to_dict()
-    output["dry_run"] = bool(args.dry_run)
+    output["dry_run"] = True
+    output["planned_asana_operations"] = [
+        asana.post_comment(task.task_id, decision.asana_comment),
+        *[
+            asana.create_task(
+                name=next_task.name,
+                notes=next_task.description,
+            )
+            for next_task in decision.next_tasks
+        ],
+    ]
 
     print(json.dumps(output, ensure_ascii=False, indent=2))
 

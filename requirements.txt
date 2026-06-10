@@ -1,0 +1,2 @@
+# Este MVP usa apenas a biblioteca padrão do Python.
+# Não há dependências externas obrigatórias nesta fase.

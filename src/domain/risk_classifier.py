@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import unicodedata
+
 from .models import RiskLevel, TaskPayload
 
 
@@ -8,15 +10,11 @@ RISK_ORDER = {
     "baixo": 1,
     "baixa": 1,
     "medio": 2,
-    "médio": 2,
     "media": 2,
-    "média": 2,
     "alto": 3,
     "alta": 3,
     "critico": 4,
-    "crítico": 4,
     "critica": 4,
-    "crítica": 4,
 }
 
 RISK_NAME: dict[int, RiskLevel] = {
@@ -31,7 +29,9 @@ RISK_NAME: dict[int, RiskLevel] = {
 def _score(value: str | None) -> int:
     if not value:
         return 0
-    return RISK_ORDER.get(value.lower().strip(), 0)
+    text = unicodedata.normalize("NFKD", value.lower().strip())
+    normalized = "".join(char for char in text if not unicodedata.combining(char))
+    return RISK_ORDER.get(normalized, 0)
 
 
 def classify_risk(task: TaskPayload, missing_evidence: list[str]) -> RiskLevel:
