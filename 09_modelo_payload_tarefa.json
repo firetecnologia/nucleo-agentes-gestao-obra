@@ -1,0 +1,43 @@
+{
+  "task_id": "123456789",
+  "task_name": "Realizar vistoria inicial da obra",
+  "obra": "Obra Piloto Núcleo",
+  "departamento_responsavel": "Engenharia",
+  "etapa_obra": "Campo",
+  "assignee": "Engenheira responsável",
+  "due_on": "2026-06-20",
+  "status_agente": "Pronto para analise",
+  "prioridade": "Alta",
+  "impacto_prazo": "Medio",
+  "impacto_financeiro": "Baixo",
+  "impacto_cliente": "Medio",
+  "precisa_aprovacao_gestao": false,
+  "precisa_aprovacao_cliente": false,
+  "evidencia_obrigatoria": [
+    "Foto",
+    "Checklist",
+    "Diario de obra"
+  ],
+  "attachments": [
+    {
+      "name": "foto_vistoria_01.jpg",
+      "type": "image/jpeg"
+    },
+    {
+      "name": "checklist_vistoria.pdf",
+      "type": "application/pdf"
+    }
+  ],
+  "comments": [
+    {
+      "author": "Engenharia",
+      "text": "Vistoria realizada. Identificamos pendência no ponto hidráulico da área gourmet."
+    }
+  ],
+  "description": "Vistoria inicial para validação das condições reais do local.",
+  "dependencies": [],
+  "custom_notes": {
+    "risco_identificado": "Possível interferência hidráulica.",
+    "decisao_tomada": ""
+  }
+}
