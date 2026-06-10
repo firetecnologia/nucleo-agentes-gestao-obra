@@ -1,0 +1,30 @@
+{
+  "task_id": "123456789",
+  "task_name": "Realizar vistoria inicial da obra",
+  "obra": "Obra Piloto Nucleo",
+  "departamento_responsavel": "Engenharia",
+  "etapa_obra": "Campo",
+  "assignee": "Equipe Engenharia",
+  "due_on": "2026-06-20",
+  "status_agente": "Pronto para analise",
+  "prioridade": "Alta",
+  "impacto_prazo": "Medio",
+  "impacto_financeiro": "Baixo",
+  "impacto_cliente": "Medio",
+  "precisa_aprovacao_gestao": false,
+  "precisa_aprovacao_cliente": false,
+  "evidencia_obrigatoria": ["Foto", "Checklist", "Diario de obra"],
+  "attachments": [
+    {"name": "foto_vistoria_01.jpg", "type": "image/jpeg"},
+    {"name": "checklist_vistoria.pdf", "type": "application/pdf"}
+  ],
+  "comments": [
+    {"author": "Engenharia", "text": "Vistoria realizada. Identificada pendencia tecnica para detalhamento."}
+  ],
+  "description": "Vistoria inicial para validacao das condicoes reais do local.",
+  "dependencies": [],
+  "custom_notes": {
+    "risco_identificado": "Pendencia tecnica a detalhar.",
+    "decisao_tomada": ""
+  }
+}
