@@ -1,58 +1,61 @@
-# Núcleo 377 - Agentes de Gestão Premium de Obra
+# Nucleo 377 - Agentes de Gestao Premium de Obra
 
-MVP em Python para analisar tarefas de obra vindas do Asana, validar evidências, classificar risco, aplicar uma matriz de decisão e preparar ações operacionais em modo seguro.
+MVP em Python para analisar tarefas de obra vindas do Asana, validar evidencias, classificar risco, aplicar uma matriz de decisao e preparar acoes operacionais em modo seguro.
 
-Nesta fase o sistema **não executa chamadas reais ao Asana**. O dry-run é o comportamento padrão e a saída mostra apenas as operações planejadas.
+O sistema nao executa chamadas reais ao Asana nesta fase. O `dry_run` e o comportamento padrao e a saida mostra apenas decisoes e operacoes planejadas.
 
 ## O que o MVP faz
 
 - Recebe um payload JSON de tarefa.
-- Identifica obra, departamento, etapa, status, evidências, riscos e próximo departamento.
-- Valida evidências obrigatórias em anexos, comentários e descrição.
+- Identifica obra, departamento, etapa, status, evidencias, riscos e proximo departamento.
+- Valida evidencias obrigatorias em anexos, comentarios e descricao.
 - Classifica risco como `low`, `medium`, `high` ou `critical`.
-- Decide entre `approved`, `request_correction`, `escalate_management`, `ask_client`, `create_next_tasks` ou `blocked`.
-- Gera comentário interno para Asana em português do Brasil.
-- Sugere próximas tarefas sem criar nada em sistemas externos.
-- Exige revisão humana para impacto financeiro alto, gestão, bloqueios e comunicação com cliente.
+- Decide entre `approved`, `request_correction`, `escalate_management`, `ask_client`, `create_next_tasks`, `blocked` ou `monitor`.
+- Roteia a analise para um agente especialista quando o departamento e reconhecido.
+- Gera comentario interno para Asana em portugues do Brasil.
+- Sugere proximas tarefas apenas como dry-run.
+- Exige revisao humana para impacto financeiro sensivel, gestao, bloqueios e comunicacao com cliente.
 
 ## Requisitos
 
 - Python 3.11 ou superior.
-- Nenhuma dependência externa obrigatória.
+- Nenhuma dependencia externa obrigatoria.
 
-O arquivo `requirements.txt` existe para documentar que o MVP usa apenas a biblioteca padrão do Python.
+O arquivo `requirements.txt` documenta que o MVP usa apenas a biblioteca padrao do Python.
 
-## Configuração
+## Configuracao
 
-Crie um arquivo `.env` local a partir do exemplo, se for preparar a próxima fase:
+Crie um arquivo `.env` local a partir do exemplo, se for preparar a proxima fase:
 
 ```bash
 cp .env.example .env
 ```
 
-Não coloque tokens reais no repositório. Nesta fase, mesmo com variáveis configuradas, o cliente Asana permanece bloqueado para chamadas reais.
+Nao coloque tokens reais no repositorio. Mesmo com variaveis configuradas, o cliente Asana permanece bloqueado para chamadas reais.
 
-Variáveis lidas pelo módulo `src.config`:
+Variaveis lidas por `src.config`:
 
-- `DRY_RUN`: mantém o comportamento seguro quando `true`.
+- `DRY_RUN`: mantem o comportamento seguro quando `true`.
 - `ASANA_ACCESS_TOKEN`: token futuro do Asana, nunca versionado.
 - `ASANA_WORKSPACE_GID`: workspace futuro.
 - `ASANA_PROJECT_GID`: projeto futuro.
-- `ASANA_ENABLE_REAL_ACTIONS`: deve permanecer `false` até a integração real ser aprovada.
+- `ASANA_ENABLE_REAL_ACTIONS`: deve permanecer `false` ate a integracao real ser aprovada.
 
-## Rodar análise em dry-run
+## Rodar analise em dry-run
 
 ```bash
 python -m src.workflows.analyze_task --input sample_task_payload.json --dry-run
 ```
 
-A saída será um JSON com a decisão do agente e as operações planejadas:
+A saida sera um JSON com a decisao do agente e as operacoes planejadas:
 
 ```json
 {
   "decision": "request_correction",
   "risk_level": "medium",
   "asana_comment": "...",
+  "specialist_agent": "EngineeringAgent",
+  "specialist_analysis": {},
   "next_tasks": [],
   "requires_human_review": true,
   "dry_run": true,
@@ -66,7 +69,7 @@ A saída será um JSON com a decisão do agente e as operações planejadas:
 python -m src.workflows.process_event --input samples/asana_event_task_ready.json --dry-run
 ```
 
-O workflow de eventos recebe um JSON simulado, roteia pelo tipo de evento, roda o agente quando há payload da tarefa e devolve:
+O workflow de eventos recebe um JSON simulado, roteia pelo tipo de evento, roda o agente quando ha payload da tarefa e devolve:
 
 ```json
 {
@@ -74,6 +77,8 @@ O workflow de eventos recebe um JSON simulado, roteia pelo tipo de evento, roda 
   "processed": true,
   "dry_run": true,
   "decision": "request_correction",
+  "specialist_agent": "EngineeringAgent",
+  "specialist_analysis": {},
   "planned_operations": [],
   "log_entry": {}
 }
@@ -85,82 +90,123 @@ O workflow de eventos recebe um JSON simulado, roteia pelo tipo de evento, roda 
 python -m unittest discover
 ```
 
-Os testes cobrem a matriz de decisão, evidências ausentes, impacto financeiro alto, aprovação com baixo risco, aprovação do cliente com revisão humana e criação sugerida de próxima tarefa.
+Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, stubs do Asana, automacao de eventos e agentes especialistas por departamento.
 
 ## Estrutura
 
-- `src/domain/`: modelos, validação de evidências, classificação de risco e motor de decisão.
-- `src/agents/`: agente orquestrador.
-- `src/integrations/`: stub seguro para integração com Asana.
+- `src/domain/`: modelos, validacao de evidencias, classificacao de risco e motor de decisao.
+- `src/agents/`: agente orquestrador e agentes especialistas por departamento.
+- `src/integrations/`: stub seguro para integracao com Asana.
 - `src/events/`: modelos, roteador, processador e log estruturado de eventos.
-- `src/workflows/`: CLI de análise de tarefa.
-- `tests/`: testes unitários.
+- `src/workflows/`: CLIs de analise de tarefa e processamento de evento.
+- `tests/`: testes unitarios.
 - `samples/`: eventos simulados do Asana para dry-run.
 - `sample_task_payload.json`: payload de exemplo.
 - `AGENTS.md` e arquivos numerados: planejamento e regras do produto.
 
-## Regras de segurança do MVP
+## Regras de seguranca do MVP
 
-- Dry-run permanece como padrão.
+- Dry-run permanece como padrao.
 - Nenhum token real deve ser versionado.
-- Nenhuma mensagem é enviada automaticamente ao cliente.
-- Nenhum comentário ou tarefa é criado no Asana nesta fase.
-- Impacto financeiro alto nunca é aprovado sem revisão humana.
-- Arquivos de planejamento não devem ser apagados.
+- Nenhuma mensagem e enviada automaticamente ao cliente.
+- Nenhum comentario ou tarefa e criado no Asana nesta fase.
+- Impacto financeiro alto nunca e aprovado sem revisao humana.
+- Impacto financeiro medio, alto ou critico em Financeiro escala para gestao.
+- Arquivos de planejamento nao devem ser apagados.
 
-## Próxima fase: Asana
+## Fase 2 - Integracao Asana segura
 
-A integração real deve ser implementada apenas depois de validar:
-
-- autenticação por variável de ambiente;
-- IDs de workspace, projeto, seções e campos fora do código;
-- logs das decisões automáticas;
-- revisão humana antes de comunicação externa;
-- flag explícita para liberar chamadas reais;
-- testes com mocks para comentários e criação de tarefas.
-
-## Fase 2 - Integração Asana segura
-
-A Fase 2 prepara a integração sem executar chamadas reais. O módulo `src.integrations.asana_client` já expõe stubs para:
+A Fase 2 prepara a integracao sem executar chamadas reais. O modulo `src.integrations.asana_client` expoe stubs para:
 
 - buscar tarefa por ID;
-- postar comentário;
+- postar comentario;
 - criar tarefa;
 - atualizar campos.
 
-Todas essas operações retornam uma operação planejada quando `dry_run=True`. Para qualquer chamada real ser considerada, o código exige simultaneamente:
+Todas essas operacoes retornam uma operacao planejada quando `dry_run=True`. Para qualquer chamada real ser considerada, o codigo exige simultaneamente:
 
 - `dry_run=False`;
 - `ASANA_ENABLE_REAL_ACTIONS=true`;
 - `ASANA_ACCESS_TOKEN` configurado;
-- confirmação explícita no código por `confirm_real_action=True`.
+- confirmacao explicita no codigo por `confirm_real_action=True`.
 
-Mesmo com todos os portões abertos, a Fase 2 ainda interrompe a execução em um stub seguro com `NotImplementedError`, sem enviar nada ao Asana.
+Mesmo com todos os portoes abertos, a integracao ainda interrompe a execucao em um stub seguro com `NotImplementedError`, sem enviar nada ao Asana.
+
+## Fase 3 - Automacao segura de eventos Asana
+
+A Fase 3 prepara o motor interno para receber eventos do Asana, ainda sem webhook real. Eventos suportados:
+
+- `task_ready_for_agent_review`: tarefa pronta para analise do agente.
+- `task_overdue`: tarefa vencida e nao concluida.
+- `new_attachment_added`: novo anexo recebido para revalidacao de evidencias.
+- `client_decision_required`: decisao de cliente exigida, com tarefa interna para Atendimento.
+- `financial_impact_detected`: impacto financeiro medio, alto ou critico, sempre com revisao humana.
+
+Regras da Fase 3:
+
+- `dry_run=True` e forcado pelo processador de eventos.
+- Nenhuma chamada real ao Asana e executada.
+- Nenhuma mensagem e enviada ao cliente.
+- Nenhuma tarefa real e criada.
+- Toda acao externa vira `planned_operation`.
+- Todo evento processado gera `log_entry` estruturado.
+- Evento desconhecido retorna erro controlado.
+
+## Fase 4 - Agentes especialistas por departamento
+
+A Fase 4 adiciona agentes especialistas em `src/agents/` para refinar a matriz geral sem sair do modo seguro:
+
+- `PlanningAgent`: avalia prazo, caminho critico, dependencias e impacto no cronograma.
+- `ProjectsAgent`: avalia pendencias de projeto, compatibilizacao, versao, detalhe executivo, RFI e conflitos.
+- `EngineeringAgent`: avalia evidencias de campo, fotos, diario de obra, vistoria, divergencias e retrabalho.
+- `PurchasingAgent`: avalia especificacao, quantidade, cotacao, prazo de entrega, fornecedor e aprovacao de compra.
+- `FinanceAgent`: avalia nota fiscal, boleto, medicao, previsto x realizado e desvio financeiro.
+- `ClientServiceAgent`: prepara apenas rascunho interno para revisao humana quando houver assunto de cliente.
+- `QualityAgent`: avalia checklist, evidencias minimas, liberacao de etapa e pendencias de qualidade.
+
+Contrato comum de saida dos especialistas:
+
+```json
+{
+  "agent_name": "EngineeringAgent",
+  "department": "Engenharia",
+  "decision": "request_correction",
+  "risk_level": "medium",
+  "analysis": "...",
+  "validated_evidence": [],
+  "missing_evidence": ["Foto"],
+  "recommended_actions": [],
+  "next_tasks": [],
+  "requires_human_review": true
+}
+```
+
+O `OrchestratorAgent` identifica o departamento, chama o especialista correspondente e combina a decisao especialista com a matriz geral. A decisao final sempre prioriza o caminho mais conservador.
+
+Se qualquer especialista retornar `blocked`, `escalate_management` ou `ask_client`, o orquestrador nao aprova automaticamente.
+
+Eventos processados por `src.workflows.process_event` tambem podem incluir:
+
+```json
+{
+  "specialist_agent": "EngineeringAgent",
+  "specialist_analysis": {}
+}
+```
+
+Regras de seguranca mantidas na Fase 4:
+
+- tudo permanece em `dry_run`;
+- nenhuma conexao real com Asana e ativada;
+- nenhum token real e necessario ou usado;
+- nenhuma mensagem e enviada automaticamente ao cliente;
+- nenhuma tarefa real e criada;
+- bloqueios, comunicacao com cliente e correcoes impedem aprovacao automatica.
 
 ## CI
 
-O GitHub Actions roda a suíte padrão em pushes e pull requests:
+O GitHub Actions roda a suite padrao em pushes e pull requests:
 
 ```bash
 python -m unittest discover
 ```
-
-## Fase 3 - Automação segura de eventos Asana
-
-A Fase 3 prepara o motor interno para receber eventos do Asana, ainda sem webhook real. Eventos suportados:
-
-- `task_ready_for_agent_review`: tarefa pronta para análise do agente.
-- `task_overdue`: tarefa vencida e não concluída.
-- `new_attachment_added`: novo anexo recebido para revalidação de evidências.
-- `client_decision_required`: decisão de cliente exigida, com tarefa interna para Atendimento.
-- `financial_impact_detected`: impacto financeiro médio, alto ou crítico, sempre com revisão humana.
-
-Regras da Fase 3:
-
-- `dry_run=True` é forçado pelo processador de eventos.
-- Nenhuma chamada real ao Asana é executada.
-- Nenhuma mensagem é enviada ao cliente.
-- Nenhuma tarefa real é criada.
-- Toda ação externa vira `planned_operation`.
-- Todo evento processado gera `log_entry` estruturado.
-- Evento desconhecido retorna erro controlado.

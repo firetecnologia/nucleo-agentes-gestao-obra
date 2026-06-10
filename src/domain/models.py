@@ -99,9 +99,11 @@ class AgentDecision:
     recommended_actions: list[str] = field(default_factory=list)
     next_tasks: list[NextTask] = field(default_factory=list)
     requires_human_review: bool = True
+    specialist_agent: str | None = None
+    specialist_analysis: dict[str, Any] | None = None
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        output = {
             "decision": self.decision,
             "risk_level": self.risk_level,
             "analysis": self.analysis,
@@ -112,3 +114,8 @@ class AgentDecision:
             "next_tasks": [asdict(task) for task in self.next_tasks],
             "requires_human_review": self.requires_human_review,
         }
+        if self.specialist_agent:
+            output["specialist_agent"] = self.specialist_agent
+        if self.specialist_analysis:
+            output["specialist_analysis"] = self.specialist_analysis
+        return output

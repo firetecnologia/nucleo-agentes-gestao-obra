@@ -40,7 +40,7 @@ class EventProcessor:
     def _handle_task_ready_for_agent_review(self, event: AsanaEvent) -> EventProcessingResult:
         decision, planned_operations = self._analyze_and_plan(event)
         if decision is None:
-            return self._error_result(event, "Payload da tarefa ausente para análise em dry-run.")
+            return self._error_result(event, "Payload da tarefa ausente para analise em dry-run.")
         return self._success_result(event, decision, planned_operations)
 
     def _handle_task_overdue(self, event: AsanaEvent) -> EventProcessingResult:
@@ -51,7 +51,7 @@ class EventProcessor:
         planned_operations.append(
             self.asana_client.post_comment(
                 event.task_id,
-                "Alerta interno: tarefa vencida identificada. Gestão deve revisar prazo e responsável.",
+                "Alerta interno: tarefa vencida identificada. Gestao deve revisar prazo e responsavel.",
             )
         )
         return self._success_result(event, decision, planned_operations)
@@ -59,12 +59,12 @@ class EventProcessor:
     def _handle_new_attachment_added(self, event: AsanaEvent) -> EventProcessingResult:
         decision, planned_operations = self._analyze_and_plan(event)
         if decision is None:
-            return self._error_result(event, "Payload da tarefa ausente para revalidar evidências em dry-run.")
+            return self._error_result(event, "Payload da tarefa ausente para revalidar evidencias em dry-run.")
 
         planned_operations.append(
             self.asana_client.post_comment(
                 event.task_id,
-                "Evidências revalidadas após novo anexo. Conferir pendências antes de avançar.",
+                "Evidencias revalidadas apos novo anexo. Conferir pendencias antes de avancar.",
             )
         )
         return self._success_result(event, decision, planned_operations)
@@ -73,7 +73,7 @@ class EventProcessor:
         event_with_flag = self._event_with_payload_updates(event, {"precisa_aprovacao_cliente": True})
         decision, planned_operations = self._analyze_and_plan(event_with_flag)
         if decision is None:
-            return self._error_result(event, "Payload da tarefa ausente para decisão de cliente em dry-run.")
+            return self._error_result(event, "Payload da tarefa ausente para decisao de cliente em dry-run.")
         return self._success_result(event, decision, planned_operations)
 
     def _handle_financial_impact_detected(self, event: AsanaEvent) -> EventProcessingResult:
@@ -84,7 +84,7 @@ class EventProcessor:
         planned_operations.append(
             self.asana_client.create_task(
                 name=f"Revisar impacto financeiro - {event.task_payload.get('task_name', event.task_id)}",
-                notes="Impacto financeiro detectado. Gestão/Financeiro devem revisar antes de qualquer aprovação.",
+                notes="Impacto financeiro detectado. Gestao/Financeiro devem revisar antes de qualquer aprovacao.",
                 project_id=None,
             )
         )
@@ -135,6 +135,8 @@ class EventProcessor:
             dry_run=True,
             decision=decision.decision,
             risk_level=decision.risk_level,
+            specialist_agent=decision.specialist_agent,
+            specialist_analysis=decision.specialist_analysis,
             planned_operations=planned_operations,
             log_entry=log_entry,
             requires_human_review=decision.requires_human_review,

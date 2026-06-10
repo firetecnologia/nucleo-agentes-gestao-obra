@@ -54,6 +54,8 @@ class EventProcessingResult:
     dry_run: bool
     decision: str | None = None
     risk_level: str | None = None
+    specialist_agent: str | None = None
+    specialist_analysis: dict[str, Any] | None = None
     planned_operations: list[dict[str, Any]] = field(default_factory=list)
     log_entry: dict[str, Any] = field(default_factory=dict)
     requires_human_review: bool = False
@@ -70,6 +72,10 @@ class EventProcessingResult:
         }
         if self.risk_level is not None:
             output["risk_level"] = self.risk_level
+        if self.specialist_agent is not None:
+            output["specialist_agent"] = self.specialist_agent
+        if self.specialist_analysis is not None:
+            output["specialist_analysis"] = self.specialist_analysis
         if self.requires_human_review:
             output["requires_human_review"] = self.requires_human_review
         if self.error:
