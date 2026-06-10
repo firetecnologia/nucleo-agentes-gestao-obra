@@ -1,0 +1,111 @@
+{
+  "obra": "Obra Piloto Nucleo",
+  "cliente": "Cliente Exemplo",
+  "periodo": {
+    "inicio": "2026-06-01",
+    "fim": "2026-06-30"
+  },
+  "analyses": [
+    {
+      "task_id": "task-201",
+      "task_name": "Liberar frente de campo",
+      "department": "Engenharia",
+      "decision": "approved",
+      "risk_level": "low",
+      "specialist_agent": "EngineeringAgent",
+      "requires_human_review": false,
+      "recommended_actions": [
+        "Manter registro das evidencias aprovadas."
+      ],
+      "impacto_financeiro": "Baixo",
+      "created_at": "2026-06-10T09:00:00Z"
+    },
+    {
+      "task_id": "task-202",
+      "task_name": "Compatibilizar detalhe executivo",
+      "department": "Projetos",
+      "decision": "request_correction",
+      "risk_level": "medium",
+      "specialist_agent": "ProjectsAgent",
+      "requires_human_review": true,
+      "recommended_actions": [
+        "Projetos deve revisar detalhe executivo antes de liberar campo."
+      ],
+      "impacto_financeiro": "Baixo",
+      "created_at": "2026-06-11T10:00:00Z"
+    },
+    {
+      "task_id": "task-203",
+      "task_name": "Revisar medicao financeira",
+      "department": "Financeiro",
+      "decision": "escalate_management",
+      "risk_level": "high",
+      "specialist_agent": "FinanceAgent",
+      "requires_human_review": true,
+      "recommended_actions": [
+        "Gestao e Financeiro devem revisar previsto x realizado."
+      ],
+      "impacto_financeiro": "Alto",
+      "created_at": "2026-06-12T11:00:00Z"
+    },
+    {
+      "task_id": "task-204",
+      "task_name": "Preparar decisao de cliente",
+      "department": "Atendimento",
+      "decision": "ask_client",
+      "risk_level": "medium",
+      "specialist_agent": "ClientServiceAgent",
+      "requires_human_review": true,
+      "recommended_actions": [
+        "Preparar rascunho interno para revisao humana."
+      ],
+      "impacto_financeiro": "Baixo",
+      "created_at": "2026-06-13T09:30:00Z"
+    }
+  ],
+  "events": [
+    {
+      "event_id": "evt-203-finance",
+      "event_type": "financial_impact_detected",
+      "task_id": "task-203",
+      "occurred_at": "2026-06-13T14:00:00Z",
+      "decision": "escalate_management",
+      "risk_level": "high",
+      "specialist_agent": "FinanceAgent",
+      "requires_human_review": true,
+      "task_payload": {
+        "task_id": "task-203",
+        "task_name": "Revisar medicao financeira",
+        "departamento_responsavel": "Financeiro",
+        "impacto_financeiro": "Alto"
+      },
+      "log_entry": {
+        "event_id": "evt-203-finance",
+        "task_id": "task-203",
+        "logged_at": "2026-06-13T14:01:00Z"
+      }
+    }
+  ],
+  "reports": [
+    {
+      "report_type": "weekly_management",
+      "obra": "Obra Piloto Nucleo",
+      "health_status": "at_risk",
+      "period": {
+        "inicio": "2026-06-10",
+        "fim": "2026-06-17"
+      },
+      "department_bottlenecks": {
+        "Financeiro": 2
+      },
+      "financial_impacts": [
+        "Revisar medicao financeira (Financeiro): impacto financeiro Alto"
+      ],
+      "recommended_actions": [
+        "Validar impacto financeiro em reuniao de gestao."
+      ],
+      "external_operations": [],
+      "dry_run": true
+    }
+  ]
+}

@@ -13,6 +13,7 @@ O sistema nao executa chamadas reais ao Asana nesta fase. O `dry_run` e o compor
 - Decide entre `approved`, `request_correction`, `escalate_management`, `ask_client`, `create_next_tasks`, `blocked` ou `monitor`.
 - Roteia a analise para um agente especialista quando o departamento e reconhecido.
 - Gera relatorios diarios internos, semanais de gestao e rascunhos seguros para cliente.
+- Gera dashboard JSON por obra com metricas, historico de decisoes, riscos e saude da obra.
 - Gera comentario interno para Asana em portugues do Brasil.
 - Sugere proximas tarefas apenas como dry-run.
 - Exige revisao humana para impacto financeiro sensivel, gestao, bloqueios e comunicacao com cliente.
@@ -95,13 +96,30 @@ python -m src.workflows.generate_report --input samples/report_input_weekly.json
 
 A CLI de relatorios apenas imprime JSON local. Ela nao envia email, WhatsApp, comentario no Asana, mensagem ao cliente ou qualquer outra operacao externa.
 
+## Gerar dashboard da obra em dry-run
+
+```bash
+python -m src.workflows.generate_dashboard --input samples/dashboard_input_obra.json --dry-run
+```
+
+A CLI de dashboard consolida analises, eventos e relatorios simulados em uma visao JSON por obra. Ela calcula metricas, gargalos por departamento, historico de decisoes, riscos ativos, decisoes pendentes, acoes recomendadas de gestao e saude da obra.
+
+O dashboard nao conecta Asana real, email, WhatsApp ou qualquer canal externo. A saida sempre mantem:
+
+```json
+{
+  "dry_run": true,
+  "external_operations": []
+}
+```
+
 ## Rodar testes
 
 ```bash
 python -m unittest discover
 ```
 
-Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, stubs do Asana, automacao de eventos, agentes especialistas e relatorios.
+Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, stubs do Asana, automacao de eventos, agentes especialistas, relatorios, dashboard, metricas e historico de decisoes.
 
 ## Estrutura
 
@@ -110,7 +128,8 @@ Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, 
 - `src/integrations/`: stub seguro para integracao com Asana.
 - `src/events/`: modelos, roteador, processador e log estruturado de eventos.
 - `src/reports/`: modelos e builders de relatorios em dry-run.
-- `src/workflows/`: CLIs de analise de tarefa, processamento de evento e geracao de relatorio.
+- `src/dashboard/`: modelos, metricas, historico de decisoes e builder de dashboard por obra.
+- `src/workflows/`: CLIs de analise de tarefa, processamento de evento, geracao de relatorio e dashboard.
 - `tests/`: testes unitarios.
 - `samples/`: eventos simulados do Asana para dry-run.
 - `sample_task_payload.json`: payload de exemplo.
@@ -123,6 +142,7 @@ Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, 
 - Nenhuma mensagem e enviada automaticamente ao cliente.
 - Nenhum comentario ou tarefa e criado no Asana nesta fase.
 - Nenhum relatorio e enviado por email, WhatsApp, Asana real ou qualquer canal externo.
+- Nenhum dashboard executa operacao externa; ele apenas imprime JSON local.
 - Impacto financeiro alto nunca e aprovado sem revisao humana.
 - Impacto financeiro medio, alto ou critico em Financeiro escala para gestao.
 - Arquivos de planejamento nao devem ser apagados.
@@ -250,6 +270,51 @@ Regras de seguranca da Fase 5:
 - `external_operations` permanece vazio;
 - nenhum relatorio e enviado automaticamente;
 - nenhum token real e usado.
+
+## Fase 6 - Dashboard, historico e indicadores por obra
+
+A Fase 6 cria a camada de estado da obra para consolidar analises, eventos simulados e relatorios em uma saida JSON preparada para uma futura interface web.
+
+Arquivos principais:
+
+- `src/dashboard/dashboard_models.py`: modelos serializaveis de entrada, metricas, historico e saida do dashboard.
+- `src/dashboard/decision_history.py`: historico de decisoes com ordenacao por data, filtros por departamento, risco e decisao, e consolidacao de pendencias.
+- `src/dashboard/metrics.py`: indicadores de tarefas analisadas, aprovadas, correcoes, bloqueios, revisao humana, riscos, decisoes de cliente, impactos financeiros, gargalos, taxa de aprovacao, taxa de retrabalho/pendencia e indice de saude.
+- `src/dashboard/work_health.py`: regra unica para classificar a saude da obra como `on_track`, `attention`, `at_risk` ou `critical`.
+- `src/dashboard/dashboard_builder.py`: builder central do dashboard por obra.
+- `src/workflows/generate_dashboard.py`: CLI para gerar o dashboard em JSON.
+
+Exemplo de entrada:
+
+```json
+{
+  "obra": "Obra Piloto Nucleo",
+  "cliente": "Cliente Exemplo",
+  "periodo": {
+    "inicio": "2026-06-01",
+    "fim": "2026-06-30"
+  },
+  "analyses": [],
+  "events": [],
+  "reports": []
+}
+```
+
+Regras de saude da obra:
+
+- `critical`: risco critico, bloqueio relevante ou muitos bloqueios.
+- `at_risk`: multiplos riscos altos, impacto financeiro relevante ou gargalos recorrentes.
+- `attention`: correcoes, revisao humana, decisoes de cliente, riscos medios ou ausencia de dados.
+- `on_track`: maioria aprovada e sem gargalos relevantes.
+
+Regras de seguranca da Fase 6:
+
+- tudo permanece em `dry_run`;
+- a CLI nao conecta Asana real;
+- nenhum email, WhatsApp ou canal externo e acionado;
+- `external_operations` permanece vazio;
+- nenhum token real e usado;
+- historico e metricas sao apenas dados locais serializaveis em JSON.
 
 ## CI
 
