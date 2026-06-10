@@ -1,0 +1,37 @@
+eventos_asana:
+  tarefa_pronta_para_analise:
+    gatilho: Campo status_agente alterado para "Pronto para analise"
+    acao:
+      - Coletar dados da tarefa
+      - Rodar Agente Orquestrador
+      - Publicar comentário no Asana
+      - Atualizar status conforme decisão
+      - Criar próximas tarefas se necessário
+
+  tarefa_atrasada:
+    gatilho: Tarefa vencida e não concluída
+    acao:
+      - Classificar impacto
+      - Notificar responsável
+      - Se impacto alto, escalar gestão
+
+  nova_evidencia_anexada:
+    gatilho: Novo anexo incluído
+    acao:
+      - Validar se evidência atende exigência
+      - Comentar análise
+      - Liberar ou solicitar complemento
+
+  decisao_cliente_pendente:
+    gatilho: Campo precisa_aprovacao_cliente = true
+    acao:
+      - Criar tarefa para Atendimento
+      - Gerar rascunho de mensagem ao cliente
+      - Marcar impacto no cronograma
+
+  desvio_financeiro:
+    gatilho: impacto_financeiro = Medio, Alto ou Critico
+    acao:
+      - Acionar Financeiro
+      - Acionar Gestao
+      - Bloquear aprovação automática
