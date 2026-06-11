@@ -39,6 +39,8 @@ python -m src.workflows.analyze_task --input sample_task_payload.json --dry-run
 python -m src.workflows.process_event --input samples/asana_event_task_ready.json --dry-run
 python -m src.workflows.generate_report --input samples/report_input_weekly.json --type weekly_management --dry-run
 python -m src.workflows.generate_dashboard --input samples/dashboard_input_obra.json --dry-run
+python -m src.workflows.export_html --type dashboard --input samples/dashboard_input_obra.json --dry-run
+python -m src.workflows.export_html --type weekly_report --input samples/report_input_weekly.json --dry-run
 python -m src.workflows.run_simulation --input samples/obra_piloto_scenario.json --dry-run
 python -m src.workflows.list_reviews --dry-run
 python -m src.workflows.review_decision --review-id REV-001 --status approved --reviewer Gestao --dry-run
@@ -224,6 +226,17 @@ python -m src.web.app
 
 O servidor usa `127.0.0.1:8000` por padrao e nao conecta nenhum sistema externo.
 
+## Exportar HTML premium em dry-run
+
+```bash
+python -m src.workflows.export_html --type dashboard --input samples/dashboard_input_obra.json --dry-run
+python -m src.workflows.export_html --type weekly_report --input samples/report_input_weekly.json --dry-run
+python -m src.workflows.export_html --type client_draft --input samples/report_input_weekly.json --dry-run
+python -m src.workflows.export_html --type simulation_summary --input samples/obra_piloto_scenario.json --dry-run
+```
+
+A exportacao gera arquivos `.html` locais em `exports/` e retorna o caminho gerado. Ela nao gera PDF, nao envia arquivo, nao conecta Asana real e nao aciona nenhum canal externo.
+
 ## Rodar testes
 
 ```bash
@@ -254,7 +267,8 @@ Use `QUALITY.md` como checklist antes de apresentar o MVP.
 - `src/simulation/`: simulacao ponta a ponta da obra piloto.
 - `src/review/`: fila de revisao humana, regras de aprovacao local e auditoria.
 - `src/templates/`: template operacional e seed sintetico da obra piloto Nucleo.
-- `src/workflows/`: CLIs de analise de tarefa, processamento de evento, geracao de relatorio, dashboard, storage, simulacao e revisao.
+- `src/export/`: exportadores HTML locais para relatorios, dashboard, rascunho de cliente e simulacao.
+- `src/workflows/`: CLIs de analise de tarefa, processamento de evento, geracao de relatorio, dashboard, exportacao HTML, storage, simulacao e revisao.
 - `tests/`: testes unitarios.
 - `samples/`: eventos simulados do Asana para dry-run.
 - `samples/nucleo_obra_piloto_template.json`: template sintetico de obra real da Nucleo.
@@ -271,6 +285,7 @@ Use `QUALITY.md` como checklist antes de apresentar o MVP.
 - Nenhum comentario ou tarefa e criado no Asana nesta fase.
 - Nenhum relatorio e enviado por email, WhatsApp, Asana real ou qualquer canal externo.
 - Nenhum dashboard executa operacao externa; ele apenas imprime JSON local.
+- Nenhuma exportacao HTML envia arquivo ou gera PDF; tudo fica local em `exports/`.
 - O historico local usa `local_data/`, sem banco externo e sem credenciais.
 - A API interna nao exige token e nao executa operacao externa.
 - Os mapeamentos Asana geram apenas operacoes planejadas em memoria.
@@ -704,6 +719,35 @@ Regras de seguranca da Fase 15:
 - nenhum servico externo e conectado;
 - nenhuma mensagem ao cliente e enviada;
 - impactos financeiros altos continuam exigindo revisao humana.
+
+## Fase 16 - Exportacao premium em HTML
+
+A Fase 16 adiciona exportadores HTML locais para apresentacao interna e futura evolucao para PDF, mantendo o MVP em modo seguro.
+
+Arquivos principais:
+
+- `src/export/html_exporter.py`: base visual, escrita local e resumo de simulacao.
+- `src/export/report_exporter.py`: relatorio semanal executivo em HTML.
+- `src/export/dashboard_exporter.py`: dashboard e historico de decisoes em HTML.
+- `src/export/client_draft_exporter.py`: rascunho de cliente com aviso de revisao humana.
+- `src/workflows/export_html.py`: CLI de exportacao HTML.
+- `exports/.gitkeep`: pasta local de saida versionada sem artefatos gerados.
+- `tests/test_html_exporter.py`: testes dos exportadores e da CLI.
+
+Tipos suportados:
+
+- `dashboard`;
+- `weekly_report`;
+- `client_draft`;
+- `simulation_summary`.
+
+Regras de seguranca da Fase 16:
+
+- tudo permanece em `dry_run`;
+- os arquivos sao gravados apenas localmente em `exports/`;
+- nenhum email, WhatsApp, Asana real ou canal externo e acionado;
+- nenhum PDF e gerado nesta fase;
+- rascunhos de cliente sempre deixam clara a revisao humana obrigatoria.
 
 ## CI
 
