@@ -1,0 +1,38 @@
+name: Manual Dry Run Demo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  dry-run-demo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Rodar testes
+        run: python -m unittest discover
+
+      - name: Rodar simulacao ponta a ponta
+        run: python -m src.workflows.run_simulation --input samples/obra_piloto_scenario.json --dry-run > simulation_output.json
+
+      - name: Gerar dashboard dry-run
+        run: python -m src.workflows.generate_dashboard --input samples/dashboard_input_obra.json --dry-run > dashboard_output.json
+
+      - name: Gerar relatorio semanal dry-run
+        run: python -m src.workflows.generate_report --input samples/report_input_weekly.json --type weekly_management --dry-run > weekly_report_output.json
+
+      - name: Publicar artefatos dry-run
+        uses: actions/upload-artifact@v4
+        with:
+          name: nucleo-agentes-dry-run-demo
+          path: |
+            simulation_output.json
+            dashboard_output.json
+            weekly_report_output.json
