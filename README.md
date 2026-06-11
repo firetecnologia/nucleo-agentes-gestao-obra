@@ -232,6 +232,14 @@ python -m unittest discover
 
 Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, stubs do Asana, automacao de eventos, agentes especialistas, relatorios, dashboard, metricas, historico de decisoes, storage local, rotas internas da API, mapeamentos Asana sandbox, interface web local, simulacao ponta a ponta, fila de revisao humana e auditoria.
 
+A Fase 14 adiciona smoke tests e testes de regressao em:
+
+- `tests/test_smoke_workflows.py`;
+- `tests/test_regression_contracts.py`;
+- `tests/test_security_dry_run.py`.
+
+Use `QUALITY.md` como checklist antes de apresentar o MVP.
+
 ## Estrutura
 
 - `src/domain/`: modelos, validacao de evidencias, classificacao de risco e motor de decisao.
