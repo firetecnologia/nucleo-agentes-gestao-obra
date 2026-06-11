@@ -1,0 +1,22 @@
+{
+  "review_id": "REV-ASANA-001",
+  "source": "spreadsheet_labor_costs",
+  "obra": "Obra Exemplo",
+  "action_type": "create_subtask",
+  "status": "pending",
+  "requires_human_review": true,
+  "parent_task_gid": "TASK_GID_EXEMPLO",
+  "planned_task": {
+    "name": "Pintura - Prestador Exemplo - Pago R$ 1.205,00",
+    "notes": "Origem: planilha_exemplo.xlsx\nAba: CONTROLE DE M.O.\nGrupo: PINTURA\nPrestador: PRESTADOR EXEMPLO\nValor pago: R$ 1.205,00",
+    "assignee_gid": "ASSIGNEE_GID_EXEMPLO",
+    "due_on": "2026-06-12"
+  },
+  "safety": {
+    "dry_run": true,
+    "external_call": false,
+    "real_action": false,
+    "client_message": false,
+    "financial_impact_reviewed": false
+  }
+}
