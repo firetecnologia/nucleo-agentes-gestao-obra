@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title }} | Nucleo 377</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <header class="page-header">
+        <img class="brand-mark" src="/static/nucleo-mark.svg" alt="Nucleo 377">
+        <p>Relatorio semanal</p>
+        <h1>{{ obra }}</h1>
+        <span>{{ health_status }}</span>
+      </header>
+      <section class="hero">
+        <h2>{{ summary }}</h2>
+      </section>
+      <section class="grid">
+        <article>
+          <h2>Avancos</h2>
+          {{ highlights }}
+        </article>
+        <article>
+          <h2>Riscos</h2>
+          {{ risks }}
+        </article>
+        <article>
+          <h2>Decisoes pendentes</h2>
+          {{ pending_decisions }}
+        </article>
+        <article>
+          <h2>Acoes recomendadas</h2>
+          {{ actions }}
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

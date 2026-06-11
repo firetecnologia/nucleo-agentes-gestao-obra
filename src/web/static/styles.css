@@ -1,0 +1,166 @@
+:root {
+  --ink: #20262e;
+  --muted: #66707d;
+  --line: #d9dee5;
+  --paper: #f6f7f9;
+  --surface: #ffffff;
+  --accent: #0f766e;
+  --accent-strong: #134e4a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.shell {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 48px;
+}
+
+.page-header {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 18px;
+  margin-bottom: 24px;
+}
+
+.brand-mark {
+  display: block;
+  height: 42px;
+  margin-bottom: 14px;
+  width: 42px;
+}
+
+.page-header p,
+.page-header span {
+  color: var(--muted);
+  margin: 0;
+}
+
+h1,
+h2 {
+  letter-spacing: 0;
+}
+
+h1 {
+  font-size: 34px;
+  margin: 8px 0;
+}
+
+h2 {
+  font-size: 20px;
+  margin: 0 0 14px;
+}
+
+.hero,
+.notice,
+article,
+section:not(.metrics) {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 18px;
+}
+
+.status {
+  color: var(--accent-strong);
+  font-weight: 700;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.metric {
+  min-height: 96px;
+}
+
+.metric span {
+  color: var(--muted);
+  display: block;
+  margin-bottom: 12px;
+}
+
+.metric strong {
+  color: var(--accent-strong);
+  font-size: 28px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.quick-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.quick-links a {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--accent-strong);
+  font-weight: 700;
+  padding: 16px;
+  text-decoration: none;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  border-bottom: 1px solid var(--line);
+  padding: 12px 10px;
+  text-align: left;
+}
+
+th {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+li {
+  margin-bottom: 8px;
+}
+
+.notice {
+  border-color: var(--accent);
+}
+
+.notice strong,
+.notice span {
+  display: block;
+}
+
+.notice span {
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.draft p {
+  line-height: 1.6;
+  margin: 0;
+}
+
+.empty {
+  color: var(--muted);
+}

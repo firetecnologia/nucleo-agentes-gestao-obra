@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title }} | Nucleo 377</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <header class="page-header">
+        <img class="brand-mark" src="/static/nucleo-mark.svg" alt="Nucleo 377">
+        <p>Historico de decisoes</p>
+        <h1>{{ obra }}</h1>
+        <span>{{ cliente }} · {{ health_status }}</span>
+      </header>
+      <section>
+        {{ decision_history }}
+      </section>
+    </main>
+  </body>
+</html>

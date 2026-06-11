@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title }} | Nucleo 377</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <header class="page-header">
+        <img class="brand-mark" src="/static/nucleo-mark.svg" alt="Nucleo 377">
+        <p>Nucleo 377</p>
+        <h1>{{ obra }}</h1>
+        <span>{{ cliente }}</span>
+      </header>
+      <section class="hero">
+        <div>
+          <p class="status">{{ health_status }}</p>
+          <h2>{{ summary }}</h2>
+        </div>
+      </section>
+      {{ metrics }}
+      {{ content }}
+    </main>
+  </body>
+</html>

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Nucleo 377">
+  <rect width="64" height="64" rx="12" fill="#0f766e"/>
+  <path d="M18 43V21h8l12 22h-8L18 21h8v22h-8Z" fill="#ffffff"/>
+  <path d="M39 21h9l-9 22h-8l9-22Z" fill="#d9f99d"/>
+</svg>

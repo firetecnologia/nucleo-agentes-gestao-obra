@@ -17,6 +17,7 @@ O sistema nao executa chamadas reais ao Asana nesta fase. O `dry_run` e o compor
 - Guarda e consulta historico local em JSON para desenvolvimento, sem banco externo.
 - Expoe rotas internas API-like em dry-run para analise, eventos, relatorios e dashboard.
 - Mapeia decisoes internas para operacoes planejadas do Asana em sandbox dry-run.
+- Renderiza interface web local para dashboard, historico, relatorio semanal e rascunho de cliente.
 - Gera comentario interno para Asana em portugues do Brasil.
 - Sugere proximas tarefas apenas como dry-run.
 - Exige revisao humana para impacto financeiro sensivel, gestao, bloqueios e comunicacao com cliente.
@@ -159,13 +160,31 @@ A camada de mapeamento transforma decisoes internas em operacoes planejadas, sem
 
 Todas as operacoes retornam `dry_run=true`, `external_call=false` e `real_action=false`.
 
+## Interface web local em dry-run
+
+A interface web local usa apenas biblioteca padrao e dados de samples. Ela renderiza:
+
+- `/`: pagina inicial da obra;
+- `/dashboard`: dashboard executivo;
+- `/historico-decisoes`: historico de decisoes;
+- `/relatorio-semanal`: relatorio semanal;
+- `/rascunho-cliente`: rascunho para cliente com aviso de revisao humana.
+
+Para subir localmente:
+
+```bash
+python -m src.web.app
+```
+
+O servidor usa `127.0.0.1:8000` por padrao e nao conecta nenhum sistema externo.
+
 ## Rodar testes
 
 ```bash
 python -m unittest discover
 ```
 
-Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, stubs do Asana, automacao de eventos, agentes especialistas, relatorios, dashboard, metricas, historico de decisoes, storage local, rotas internas da API e mapeamentos Asana sandbox.
+Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, stubs do Asana, automacao de eventos, agentes especialistas, relatorios, dashboard, metricas, historico de decisoes, storage local, rotas internas da API, mapeamentos Asana sandbox e interface web local.
 
 ## Estrutura
 
@@ -177,6 +196,7 @@ Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, 
 - `src/dashboard/`: modelos, metricas, historico de decisoes e builder de dashboard por obra.
 - `src/storage/`: armazenamento local em JSON para historico dry-run.
 - `src/api/`: camada API-like local em dry-run.
+- `src/web/`: interface web local para demonstracao interna.
 - `src/workflows/`: CLIs de analise de tarefa, processamento de evento, geracao de relatorio, dashboard e storage.
 - `tests/`: testes unitarios.
 - `samples/`: eventos simulados do Asana para dry-run.
@@ -194,6 +214,7 @@ Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, 
 - O historico local usa `local_data/`, sem banco externo e sem credenciais.
 - A API interna nao exige token e nao executa operacao externa.
 - Os mapeamentos Asana geram apenas operacoes planejadas em memoria.
+- A interface web local usa samples/storage e nao envia dados para fora.
 - Impacto financeiro alto nunca e aprovado sem revisao humana.
 - Impacto financeiro medio, alto ou critico em Financeiro escala para gestao.
 - Arquivos de planejamento nao devem ser apagados.
@@ -466,6 +487,33 @@ Regras de seguranca da Fase 9:
 - nenhuma producao e ativada;
 - nenhuma mensagem e enviada ao cliente;
 - toda operacao planejada retorna `external_call=false` e `real_action=false`.
+
+## Fase 10 - Interface web local para dashboard e relatorios
+
+A Fase 10 cria uma interface web local para demonstracao interna da diretoria/equipe, usando os dados de samples e os modulos internos ja existentes.
+
+Arquivos principais:
+
+- `src/web/app.py`: aplicacao web local e servidor HTTP simples.
+- `src/web/templates/`: templates HTML das telas.
+- `src/web/static/`: CSS e ativo visual local.
+
+Telas disponiveis:
+
+- pagina inicial da obra;
+- dashboard executivo;
+- historico de decisoes;
+- relatorio semanal;
+- rascunho para cliente com aviso de revisao humana.
+
+Regras de seguranca da Fase 10:
+
+- sem login nesta fase;
+- tudo local e em `dry_run`;
+- nenhuma chamada real ao Asana e executada;
+- nenhum email, WhatsApp ou canal externo e acionado;
+- nenhum dado e enviado ao cliente;
+- a interface consome apenas samples e modulos internos.
 
 ## CI
 
