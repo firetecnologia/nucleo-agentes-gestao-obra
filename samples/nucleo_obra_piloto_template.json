@@ -1,0 +1,55 @@
+{
+  "template_id": "nucleo-377-obra-piloto-v1",
+  "template_name": "Template operacional de obra piloto Nucleo 377",
+  "dry_run": true,
+  "external_operations": [],
+  "data_policy": {
+    "uses_real_client_data": false,
+    "description": "Dados sinteticos para demonstracao interna e piloto seguro."
+  },
+  "obra": {
+    "nome": "Nucleo 377 - Obra Piloto Template",
+    "tipo": "Reforma residencial premium",
+    "localidade": "Ambiente de demonstracao",
+    "periodo_estimado": {
+      "inicio": "2026-06-01",
+      "fim": "2026-09-30"
+    }
+  },
+  "cliente": {
+    "nome": "Cliente Piloto Demonstracao",
+    "dados_sensiveis": false,
+    "canal_externo_habilitado": false
+  },
+  "departamentos": [
+    "Planejamento",
+    "Projetos",
+    "Compras",
+    "Engenharia",
+    "Financeiro",
+    "Qualidade",
+    "Atendimento",
+    "Gestao"
+  ],
+  "etapas": [
+    {"nome": "Diagnostico inicial", "departamento_lider": "Planejamento", "evidencias": ["Checklist", "Foto"]},
+    {"nome": "Planejamento", "departamento_lider": "Planejamento", "evidencias": ["Checklist", "Aprovacao gestao"]},
+    {"nome": "Projetos e compatibilizacao", "departamento_lider": "Projetos", "evidencias": ["Projeto", "Checklist"]},
+    {"nome": "Compras", "departamento_lider": "Compras", "evidencias": ["Orcamento"]},
+    {"nome": "Execucao acompanhada", "departamento_lider": "Engenharia", "evidencias": ["Foto", "Diario de obra"]},
+    {"nome": "Medicoes", "departamento_lider": "Financeiro", "evidencias": ["Medicao", "Nota fiscal"]},
+    {"nome": "Qualidade", "departamento_lider": "Qualidade", "evidencias": ["Checklist", "Foto"]},
+    {"nome": "Entrega", "departamento_lider": "Atendimento", "evidencias": ["Checklist", "Aprovacao cliente"]},
+    {"nome": "Pos-obra", "departamento_lider": "Atendimento", "evidencias": ["Checklist"]}
+  ],
+  "weekly_report_model": {
+    "sections": ["resumo executivo", "saude da obra", "riscos e gargalos", "decisoes pendentes"],
+    "dry_run": true,
+    "external_operations": []
+  },
+  "dashboard_model": {
+    "widgets": ["saude da obra", "gargalos por departamento", "historico de decisoes"],
+    "dry_run": true,
+    "external_operations": []
+  }
+}

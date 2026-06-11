@@ -89,7 +89,16 @@ Confirme na saida:
 }
 ```
 
-## 8. Revisao humana e auditoria
+## 8. Template de obra piloto Nucleo
+
+Use os arquivos abaixo para apresentar a estrutura operacional de uma obra piloto sem dados reais de cliente:
+
+- `samples/nucleo_obra_piloto_template.json`
+- `samples/nucleo_obra_piloto_seed.json`
+
+O template mostra etapas, departamentos, tarefas padrao, evidencias obrigatorias, riscos comuns e pontos de aprovacao. O seed pode alimentar analise de tarefa, simulacao, relatorio, dashboard e fila de revisao em dry-run.
+
+## 9. Revisao humana e auditoria
 
 Para listar a fila local:
 
@@ -105,7 +114,7 @@ python -m src.workflows.review_decision --review-id REV-001 --status approved --
 
 Explique que aprovar na fila altera apenas o status local e registra auditoria. Isso nao aprova impacto financeiro no Asana e nao executa nenhuma acao externa.
 
-## 9. Interface web local
+## 10. Interface web local
 
 ```bash
 python -m src.web.app
@@ -130,8 +139,9 @@ O rascunho para cliente e apenas uma previa interna, com revisao humana obrigato
 5. Gerar o relatorio semanal executivo.
 6. Gerar o dashboard JSON.
 7. Rodar a simulacao ponta a ponta da obra piloto.
-8. Mostrar a fila de revisao humana e a trilha de auditoria.
-9. Abrir a interface web local para visualizacao executiva.
+8. Mostrar o template e o seed da obra piloto Nucleo.
+9. Mostrar a fila de revisao humana e a trilha de auditoria.
+10. Abrir a interface web local para visualizacao executiva.
 
 ## Pontos de controle
 

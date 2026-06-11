@@ -253,9 +253,12 @@ Use `QUALITY.md` como checklist antes de apresentar o MVP.
 - `src/web/`: interface web local para demonstracao interna.
 - `src/simulation/`: simulacao ponta a ponta da obra piloto.
 - `src/review/`: fila de revisao humana, regras de aprovacao local e auditoria.
+- `src/templates/`: template operacional e seed sintetico da obra piloto Nucleo.
 - `src/workflows/`: CLIs de analise de tarefa, processamento de evento, geracao de relatorio, dashboard, storage, simulacao e revisao.
 - `tests/`: testes unitarios.
 - `samples/`: eventos simulados do Asana para dry-run.
+- `samples/nucleo_obra_piloto_template.json`: template sintetico de obra real da Nucleo.
+- `samples/nucleo_obra_piloto_seed.json`: seed inicial para analise, simulacao, relatorio, dashboard e fila de revisao.
 - `sample_task_payload.json`: payload de exemplo.
 - `DEMO.md`: roteiro de demonstracao do MVP.
 - `AGENTS.md` e arquivos numerados: planejamento e regras do produto.
@@ -651,6 +654,56 @@ Regras de seguranca da Fase 13:
 - nao inclui token real;
 - nao instrui envio ao cliente;
 - nao adiciona dependencias externas desnecessarias.
+
+## Fase 14 - Qualidade, smoke tests e regressao
+
+A Fase 14 endurece o MVP antes das proximas integracoes.
+
+Arquivos principais:
+
+- `QUALITY.md`: checklist de validacao antes de apresentar o MVP.
+- `tests/test_smoke_workflows.py`: smoke tests dos fluxos principais.
+- `tests/test_regression_contracts.py`: contratos JSON das saidas principais.
+- `tests/test_security_dry_run.py`: garantias de dry-run, sem operacoes externas e sem envio ao cliente.
+
+Regras de seguranca da Fase 14:
+
+- todos os fluxos sensiveis mantem `dry_run=true`;
+- `external_operations` permanece vazio nos contratos principais;
+- comunicacao com cliente continua apenas como rascunho;
+- nenhum teste depende de credenciais reais.
+
+## Fase 15 - Template de obra piloto Nucleo
+
+A Fase 15 cria um template operacional sintetico para demonstrar uma obra gerida pela Nucleo sem expor dados reais de cliente.
+
+Arquivos principais:
+
+- `src/templates/nucleo_work_template.py`: etapas, departamentos, tarefas padrao, evidencias, riscos e pontos de aprovacao.
+- `src/templates/project_seed.py`: seed que alimenta analise, simulacao, relatorio, dashboard e fila de revisao.
+- `samples/nucleo_obra_piloto_template.json`: snapshot do template piloto.
+- `samples/nucleo_obra_piloto_seed.json`: JSON inicial seguro para demonstracao.
+- `tests/test_nucleo_work_template.py`: validacao do template e do seed.
+
+Etapas cobertas:
+
+- Diagnostico inicial;
+- Planejamento;
+- Projetos e compatibilizacao;
+- Compras;
+- Execucao acompanhada;
+- Medicoes;
+- Qualidade;
+- Entrega;
+- Pos-obra.
+
+Regras de seguranca da Fase 15:
+
+- tudo permanece em `dry_run`;
+- o template usa apenas dados sinteticos;
+- nenhum servico externo e conectado;
+- nenhuma mensagem ao cliente e enviada;
+- impactos financeiros altos continuam exigindo revisao humana.
 
 ## CI
 
