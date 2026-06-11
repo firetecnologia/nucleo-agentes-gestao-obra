@@ -1,0 +1,92 @@
+{
+  "scenario": "obra_piloto_fase_11",
+  "obra": "Nucleo 377 - Obra Piloto",
+  "cliente": "Cliente Piloto",
+  "periodo": {
+    "inicio": "2026-06-01",
+    "fim": "2026-06-07"
+  },
+  "tasks": [
+    {
+      "task_id": "OBRA-ENG-001",
+      "task_name": "Validar concretagem do bloco A",
+      "obra": "Nucleo 377 - Obra Piloto",
+      "departamento_responsavel": "Engenharia",
+      "etapa_obra": "Execucao de campo",
+      "status_agente": "Pronto para analise",
+      "prioridade": "Alta",
+      "assignee": "Engenharia",
+      "due_on": "2026-06-05",
+      "impacto_prazo": "Medio",
+      "impacto_financeiro": "Baixo",
+      "impacto_cliente": "Baixo",
+      "precisa_aprovacao_gestao": false,
+      "precisa_aprovacao_cliente": false,
+      "evidencia_obrigatoria": [
+        "Foto",
+        "Diario de obra"
+      ],
+      "attachments": [
+        {
+          "name": "foto_concretagem_bloco_a.jpg",
+          "type": "image/jpeg"
+        }
+      ],
+      "comments": [
+        {
+          "author": "Engenharia",
+          "text": "Servico executado, evidencia complementar ainda pendente."
+        }
+      ],
+      "description": "Tarefa pronta para analise do agente, mas com evidencia de campo incompleta.",
+      "dependencies": [],
+      "custom_notes": {
+        "fase": "11",
+        "observacao": "Cenario deve solicitar correcao por falta de diario de obra."
+      }
+    }
+  ],
+  "events": [
+    {
+      "event_id": "EVT-FIN-001",
+      "event_type": "financial_impact_detected",
+      "task_id": "OBRA-FIN-001",
+      "occurred_at": "2026-06-06T13:30:00Z",
+      "source": "asana_webhook_stub",
+      "dry_run": true,
+      "metadata": {
+        "reason": "Aditivo de material identificado na medicao."
+      },
+      "task_payload": {
+        "task_id": "OBRA-FIN-001",
+        "task_name": "Revisar aditivo de material",
+        "obra": "Nucleo 377 - Obra Piloto",
+        "departamento_responsavel": "Financeiro",
+        "etapa_obra": "Medicao",
+        "status_agente": "Pronto para analise",
+        "prioridade": "Alta",
+        "assignee": "Financeiro",
+        "due_on": "2026-06-07",
+        "impacto_prazo": "Baixo",
+        "impacto_financeiro": "Alto",
+        "impacto_cliente": "Medio",
+        "precisa_aprovacao_gestao": true,
+        "precisa_aprovacao_cliente": false,
+        "evidencia_obrigatoria": [],
+        "attachments": [],
+        "comments": [
+          {
+            "author": "Financeiro",
+            "text": "Aditivo precisa de revisao antes de qualquer aprovacao."
+          }
+        ],
+        "description": "Evento de impacto financeiro deve escalar a decisao para gestao.",
+        "dependencies": [],
+        "custom_notes": {
+          "impacto_estimado": "alto",
+          "fase": "11"
+        }
+      }
+    }
+  ]
+}
