@@ -16,6 +16,7 @@ O sistema nao executa chamadas reais ao Asana nesta fase. O `dry_run` e o compor
 - Gera dashboard JSON por obra com metricas, historico de decisoes, riscos e saude da obra.
 - Guarda e consulta historico local em JSON para desenvolvimento, sem banco externo.
 - Expoe rotas internas API-like em dry-run para analise, eventos, relatorios e dashboard.
+- Mapeia decisoes internas para operacoes planejadas do Asana em sandbox dry-run.
 - Gera comentario interno para Asana em portugues do Brasil.
 - Sugere proximas tarefas apenas como dry-run.
 - Exige revisao humana para impacto financeiro sensivel, gestao, bloqueios e comunicacao com cliente.
@@ -146,19 +147,31 @@ print(response.to_dict())
 
 FastAPI e `uvicorn src.api.app:app --reload` ficam documentados como evolucao futura quando dependencias externas forem aprovadas. A fase atual mantem apenas biblioteca padrao para preservar testes locais e seguranca.
 
+## Mapeamentos Asana em sandbox dry-run
+
+A camada de mapeamento transforma decisoes internas em operacoes planejadas, sem executar chamada externa:
+
+- comentario interno planejado;
+- tarefa interna planejada;
+- atualizacao planejada de campo;
+- vinculo planejado entre obra, departamento e tarefa;
+- registro planejado de revisao humana.
+
+Todas as operacoes retornam `dry_run=true`, `external_call=false` e `real_action=false`.
+
 ## Rodar testes
 
 ```bash
 python -m unittest discover
 ```
 
-Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, stubs do Asana, automacao de eventos, agentes especialistas, relatorios, dashboard, metricas, historico de decisoes, storage local e rotas internas da API.
+Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, stubs do Asana, automacao de eventos, agentes especialistas, relatorios, dashboard, metricas, historico de decisoes, storage local, rotas internas da API e mapeamentos Asana sandbox.
 
 ## Estrutura
 
 - `src/domain/`: modelos, validacao de evidencias, classificacao de risco e motor de decisao.
 - `src/agents/`: agente orquestrador e agentes especialistas por departamento.
-- `src/integrations/`: stub seguro para integracao com Asana.
+- `src/integrations/`: stub seguro para integracao com Asana e mapeamentos sandbox.
 - `src/events/`: modelos, roteador, processador e log estruturado de eventos.
 - `src/reports/`: modelos e builders de relatorios em dry-run.
 - `src/dashboard/`: modelos, metricas, historico de decisoes e builder de dashboard por obra.
@@ -180,6 +193,7 @@ Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, 
 - Nenhum dashboard executa operacao externa; ele apenas imprime JSON local.
 - O historico local usa `local_data/`, sem banco externo e sem credenciais.
 - A API interna nao exige token e nao executa operacao externa.
+- Os mapeamentos Asana geram apenas operacoes planejadas em memoria.
 - Impacto financeiro alto nunca e aprovado sem revisao humana.
 - Impacto financeiro medio, alto ou critico em Financeiro escala para gestao.
 - Arquivos de planejamento nao devem ser apagados.
@@ -425,6 +439,33 @@ Regras de seguranca da Fase 8:
 - nenhuma mensagem e enviada ao cliente;
 - nenhum token real e necessario;
 - `external_operations` permanece vazio.
+
+## Fase 9 - Mapeamentos Asana em sandbox dry-run
+
+A Fase 9 prepara a traducao entre decisoes internas dos agentes e a estrutura futura do Asana, mantendo tudo em memoria e sandbox.
+
+Arquivos principais:
+
+- `src/integrations/asana_payloads.py`: modelos de referencia e operacao planejada.
+- `src/integrations/asana_operations.py`: builders de operacoes planejadas.
+- `src/integrations/asana_mapping.py`: mapeamento de decisoes para operacoes.
+
+Mapeamentos principais:
+
+- `request_correction`: comentario interno planejado e atualizacao planejada de campos.
+- `ask_client`: tarefa interna para Atendimento/Gestao revisar comunicacao; nenhuma mensagem ao cliente.
+- `escalate_management`: tarefa interna para Gestao e revisao humana.
+- `create_next_tasks`: tarefa planejada para o proximo departamento.
+- `blocked`: comentario interno e revisao humana.
+
+Regras de seguranca da Fase 9:
+
+- tudo permanece em `dry_run`;
+- nenhuma chamada externa e executada;
+- nenhum token real e usado;
+- nenhuma producao e ativada;
+- nenhuma mensagem e enviada ao cliente;
+- toda operacao planejada retorna `external_call=false` e `real_action=false`.
 
 ## CI
 
