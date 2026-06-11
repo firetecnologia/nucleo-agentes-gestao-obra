@@ -18,6 +18,8 @@ O sistema nao executa chamadas reais ao Asana nesta fase. O `dry_run` e o compor
 - Expoe rotas internas API-like em dry-run para analise, eventos, relatorios e dashboard.
 - Mapeia decisoes internas para operacoes planejadas do Asana em sandbox dry-run.
 - Renderiza interface web local para dashboard, historico, relatorio semanal e rascunho de cliente.
+- Executa simulacao ponta a ponta da obra piloto, com relatorio, dashboard e historico local.
+- Mantem fila de revisao humana e trilha de auditoria local para decisoes sensiveis.
 - Gera comentario interno para Asana em portugues do Brasil.
 - Sugere proximas tarefas apenas como dry-run.
 - Exige revisao humana para impacto financeiro sensivel, gestao, bloqueios e comunicacao com cliente.
@@ -28,6 +30,22 @@ O sistema nao executa chamadas reais ao Asana nesta fase. O `dry_run` e o compor
 - Nenhuma dependencia externa obrigatoria.
 
 O arquivo `requirements.txt` documenta que o MVP usa apenas a biblioteca padrao do Python.
+
+## Comandos principais
+
+```bash
+python -m unittest discover
+python -m src.workflows.analyze_task --input sample_task_payload.json --dry-run
+python -m src.workflows.process_event --input samples/asana_event_task_ready.json --dry-run
+python -m src.workflows.generate_report --input samples/report_input_weekly.json --type weekly_management --dry-run
+python -m src.workflows.generate_dashboard --input samples/dashboard_input_obra.json --dry-run
+python -m src.workflows.run_simulation --input samples/obra_piloto_scenario.json --dry-run
+python -m src.workflows.list_reviews --dry-run
+python -m src.workflows.review_decision --review-id REV-001 --status approved --reviewer Gestao --dry-run
+python -m src.web.app
+```
+
+O roteiro completo para demonstracao esta em `DEMO.md`.
 
 ## Configuracao
 
@@ -117,6 +135,34 @@ O dashboard nao conecta Asana real, email, WhatsApp ou qualquer canal externo. A
 }
 ```
 
+## Simular obra piloto em dry-run
+
+```bash
+python -m src.workflows.run_simulation --input samples/obra_piloto_scenario.json --dry-run
+```
+
+A simulacao encadeia analise de tarefa, processamento de evento, operacoes planejadas, relatorio semanal, dashboard, interface web local e historico em `local_data/`. A saida consolida:
+
+- `analyses`;
+- `events_processed`;
+- `planned_operations`;
+- `weekly_report`;
+- `dashboard`;
+- `saved_records`;
+- `storage_query`;
+- `web_preview`;
+- `dry_run=true`;
+- `external_operations=[]`.
+
+## Revisao humana e auditoria local
+
+```bash
+python -m src.workflows.list_reviews --dry-run
+python -m src.workflows.review_decision --review-id REV-001 --status approved --reviewer Gestao --dry-run
+```
+
+A fila de revisao e local e serve para governanca antes de qualquer decisao sensivel. Decisoes com cliente, bloqueio, escalonamento para gestao, impacto financeiro medio/alto/critico ou risco alto/critico exigem revisao humana. Aprovar na fila altera apenas o JSON local, registra auditoria e nunca executa acao externa.
+
 ## Guardar e consultar historico local em dry-run
 
 ```bash
@@ -184,7 +230,7 @@ O servidor usa `127.0.0.1:8000` por padrao e nao conecta nenhum sistema externo.
 python -m unittest discover
 ```
 
-Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, stubs do Asana, automacao de eventos, agentes especialistas, relatorios, dashboard, metricas, historico de decisoes, storage local, rotas internas da API, mapeamentos Asana sandbox e interface web local.
+Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, stubs do Asana, automacao de eventos, agentes especialistas, relatorios, dashboard, metricas, historico de decisoes, storage local, rotas internas da API, mapeamentos Asana sandbox, interface web local, simulacao ponta a ponta, fila de revisao humana e auditoria.
 
 ## Estrutura
 
@@ -197,10 +243,13 @@ Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, 
 - `src/storage/`: armazenamento local em JSON para historico dry-run.
 - `src/api/`: camada API-like local em dry-run.
 - `src/web/`: interface web local para demonstracao interna.
-- `src/workflows/`: CLIs de analise de tarefa, processamento de evento, geracao de relatorio, dashboard e storage.
+- `src/simulation/`: simulacao ponta a ponta da obra piloto.
+- `src/review/`: fila de revisao humana, regras de aprovacao local e auditoria.
+- `src/workflows/`: CLIs de analise de tarefa, processamento de evento, geracao de relatorio, dashboard, storage, simulacao e revisao.
 - `tests/`: testes unitarios.
 - `samples/`: eventos simulados do Asana para dry-run.
 - `sample_task_payload.json`: payload de exemplo.
+- `DEMO.md`: roteiro de demonstracao do MVP.
 - `AGENTS.md` e arquivos numerados: planejamento e regras do produto.
 
 ## Regras de seguranca do MVP
@@ -215,6 +264,8 @@ Os testes cobrem a matriz de decisao, evidencias ausentes, configuracao segura, 
 - A API interna nao exige token e nao executa operacao externa.
 - Os mapeamentos Asana geram apenas operacoes planejadas em memoria.
 - A interface web local usa samples/storage e nao envia dados para fora.
+- A simulacao e local, salva historico em `local_data/` e nao chama servicos externos.
+- A revisao humana altera apenas status local e registra auditoria em dry-run.
 - Impacto financeiro alto nunca e aprovado sem revisao humana.
 - Impacto financeiro medio, alto ou critico em Financeiro escala para gestao.
 - Arquivos de planejamento nao devem ser apagados.
@@ -514,6 +565,84 @@ Regras de seguranca da Fase 10:
 - nenhum email, WhatsApp ou canal externo e acionado;
 - nenhum dado e enviado ao cliente;
 - a interface consome apenas samples e modulos internos.
+
+## Fase 11 - Simulacao ponta a ponta da obra piloto
+
+A Fase 11 cria um cenario completo da obra piloto para demonstrar o MVP funcionando como um fluxo integrado.
+
+Arquivos principais:
+
+- `src/simulation/obra_piloto.py`: caminhos padrao da obra piloto.
+- `src/simulation/scenario_builder.py`: carregamento e montagem de entradas para relatorio, dashboard e historico.
+- `src/simulation/scenario_runner.py`: executor da simulacao completa.
+- `src/workflows/run_simulation.py`: CLI da simulacao.
+- `samples/obra_piloto_scenario.json`: cenario da obra piloto.
+
+O ciclo demonstrado inclui:
+
+- tarefa de Engenharia pronta para analise;
+- falta de evidencia de campo;
+- correcao solicitada;
+- impacto financeiro detectado;
+- decisao escalada para gestao;
+- relatorio semanal gerado;
+- dashboard atualizado;
+- historico local salvo e consultavel.
+
+Regras de seguranca da Fase 11:
+
+- tudo permanece em `dry_run`;
+- nenhuma chamada real ao Asana e executada;
+- nenhuma tarefa real e criada;
+- nenhuma mensagem e enviada ao cliente;
+- `external_operations` permanece vazio.
+
+## Fase 12 - Revisao humana, aprovacoes locais e auditoria
+
+A Fase 12 cria uma fila local para diretoria/gestao revisar decisoes sensiveis antes de qualquer avanco operacional.
+
+Arquivos principais:
+
+- `src/review/review_models.py`: modelo de item de revisao.
+- `src/review/approval_rules.py`: regras que determinam quando uma decisao exige revisao humana.
+- `src/review/review_queue.py`: fila local de revisoes.
+- `src/review/audit_trail.py`: trilha de auditoria.
+- `src/workflows/list_reviews.py`: CLI para listar revisoes.
+- `src/workflows/review_decision.py`: CLI para atualizar status local.
+
+Status suportados:
+
+- `pending`;
+- `approved`;
+- `rejected`;
+- `changes_requested`.
+
+Regras de seguranca da Fase 12:
+
+- aprovar na fila nao executa acao externa;
+- aprovacao altera apenas status local em dry-run;
+- decisoes de cliente sempre exigem revisao humana;
+- impacto financeiro medio, alto ou critico exige revisao humana;
+- risco alto ou critico exige revisao humana;
+- toda mudanca de status registra auditoria;
+- nenhuma mensagem e enviada ao cliente.
+
+## Fase 13 - Documentacao de demonstracao do MVP
+
+A Fase 13 consolida a documentacao de demo para equipe e diretoria.
+
+Arquivos principais:
+
+- `DEMO.md`: roteiro recomendado de demonstracao local.
+- `README.md`: comandos principais e resumo das fases.
+- `requirements.txt`: declaracao de dependencias necessarias.
+
+Regras de seguranca da Fase 13:
+
+- documentacao reforca `dry_run` como padrao;
+- nao inclui token real;
+- nao instrui envio ao cliente;
+- nao adiciona dependencias externas desnecessarias.
 
 ## CI
 

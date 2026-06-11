@@ -1,2 +1,3 @@
-# Este MVP usa apenas a biblioteca padrão do Python.
-# Não há dependências externas obrigatórias nesta fase.
+# Este MVP usa apenas a biblioteca padrao do Python.
+# Nao ha dependencias externas obrigatorias nesta fase.
+# Mantenha este arquivo sem tokens, URLs privadas ou pacotes desnecessarios.
